@@ -91,6 +91,10 @@
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 
+;; Para maximizr al arrancar
+
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
 ;; Short answers only please
 
 (setq-default use-short-answers t)
@@ -341,7 +345,7 @@
   :custom
   (rmh-elfeed-org-files
    (list (concat (file-name-as-directory (getenv "HOME"))
-		 "elfeed.org"))))
+		 "org/bujo/elfeed.org"))))
 
 ;; Easy insertion of weblinks
 
@@ -377,7 +381,6 @@
   (openwith-associations nil))
 
 ;; Fleeting notes
-
 (use-package org
   :bind
   (("C-c c" . org-capture)
@@ -385,20 +388,26 @@
   :custom
   (org-goto-interface 'outline-path-completion)
   (org-capture-templates
-   '(("f" "Fleeting note"
-      item
-      (file+headline org-default-notes-file "Notes")
-      "- %?")
-     ("p" "Permanent note" plain
+   '(("r" "Nota rápida"
+      entry (file "~/denote/bujo/notas.org")
+      "* %?"
+      :empty-lines 1)
+     ("d" "Nota en el diario"
+      plain (file+datetree "~/denote/bujo/diario.org")
+      "%?"
+      :empty-lines 1)
+     ("p" "Nota permanente" plain
       (file denote-last-path)
       #'denote-org-capture
       :no-save t
       :immediate-finish nil
       :kill-buffer t
       :jump-to-captured t)
-     ("t" "New task" entry
-      (file+headline org-default-notes-file "Tasks")
-      "* TODO %i%?"))))
+     ("t" "Tarea" entry
+      (file+headline "~/denote/bujo/tareas.org" "Capturadas ✅")
+      "* TODO %i%?"
+     :empty-lines 1)   
+     )))
 
 ;; Denote
 
@@ -418,6 +427,7 @@
    ("C-c w d i" . denote-link-or-create)
    ("C-c w d k" . denote-rename-file-keywords)
    ("C-c w d n" . denote)
+   ("C-c w d o" . denote-open-or-create)
    ("C-c w d r" . denote-rename-file)
    ("C-c w d R" . denote-rename-file-using-front-matter)))
 
@@ -425,6 +435,11 @@
   :bind
   (("C-c w d h" . denote-org-link-to-heading)
    ("C-c w d s" . denote-org-extract-org-subtree)))
+
+;; Denote
+
+(setq denote-directory "~/denote")
+
 
 ;; Consult convenience functions
 

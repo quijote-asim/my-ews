@@ -40,7 +40,7 @@
   :link '(url-link :tag "Homepage" "https://lucidmanager.org/tags/emacs/"))
 
 (defcustom ews-bibtex-directory
-  (concat (file-name-as-directory (getenv "HOME")) "library")
+  (concat (file-name-as-directory (getenv "HOME")) "org/lib")
   "Location of BibTeX files and attachments."
   :group 'ews
   :type 'directory)
@@ -51,7 +51,7 @@
   :group 'ews
   :type 'list)
 
-(defcustom ews-hunspell-dictionaries "en_AU"
+(defcustom ews-hunspell-dictionaries "es_ES,en_US"
   "Comma-separated list of Hunspell dictionaries."
   :group 'ews
   :type 'list)
@@ -61,7 +61,7 @@
 Nil implies all levels are capitalised."
   :group 'ews
   :type  '(choice (const :tag "All headings" nil)
-		  (integer :tag "Highest level" 1)))
+		  (integer :tag "Highest level" 2)))
 
 ;; Check for missing external software
 ;;;###autoload
