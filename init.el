@@ -91,6 +91,11 @@
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 
+;; segui automáticamente los enlaces simbólicos
+;; no pregunta cuando el archivo está bajo control de versiones
+
+(setq vc-follow-symlinks t)
+
 ;; Para maximizr al arrancar
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
