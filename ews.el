@@ -308,3 +308,19 @@ generate links in titlecase for attachments."
      (title (format "%s" (titlecase--string clean-title titlecase-style)))
      (t ""))))
 
+;;; ews.el --- files for Quijote Libre
+
+;; Copyright (C) 2025 Quijote Libre
+
+;; Author: Quijote Libre 
+;; Created: 29 april 2025
+;; Version: 1.0
+
+;; Definición de ficheros clave
+
+(defconst ql-journal-file     "~/denote/20250430T130243--índice__bujo.org"    "Archivo índice del sistema.")
+(defconst ql-journal-file     "~/denote/20250426T191311--diario__bujo.org"    "Archivo de notas diarias.")
+(defconst ql-tasks-file       "~/denote/20250426T191557--trabajo__bujo.org"   "Archivo de tareas.")
+(defconst ql-collections-file "~/denote/20250430T125832--colecciones__bujo.org" "Archivo de tareas archivadas.")
+(defconst ql-archive-file     "~/denote/20250430T125950--archivo__bujo.org" "Archivo de tareas archivadas.")
+
