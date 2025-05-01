@@ -289,6 +289,12 @@
   (org-modern-statistics nil)
   (org-modern-progress nil))
 
+;; Otros ajustes para org-mode
+
+(setq org-log-done 'note)
+(org-log-into-drawer t)
+(org-reverse-note-order t)
+
 ;; INSPIRATION
 
 ;; Doc-View
