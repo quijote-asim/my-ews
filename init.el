@@ -153,7 +153,19 @@
   :config
   (balanced-windows-mode))
 
-;; MINIBUFFER COMPLETION
+;; Ajustes del calendario
+
+;; formato de fecha y semana comienza en lunes
+(setq calendar-date-style 'european
+      calendar-week-start-day 1)
+
+;; Nombres de dias y meses en castellano
+(setq calendar-day-header-array ["Do" "Lu" "Ma" "Mi" "Ju" "Vi" "Sá"])
+(setq calendar-day-name-array ["domingo" "lunes" "martes" "miércoles" "jueves" "viernes" "sábado"])
+(setq calendar-month-abbrev-array ["Ene" "Feb" "Mar" "Abr" "May" "Jun" "Jul" "Ago" "Sep" "Oct" "Nov" "Dic"])
+(setq calendar-month-name-array ["enero" "febrero" "marzo" "abril" "mayo" "junio" "julio" "agosto" "septiembre" "octubre" "noviembre" "diciembre"])
+
+;;; MINIBUFFER COMPLETION
 
 ;; Enable vertico
 
