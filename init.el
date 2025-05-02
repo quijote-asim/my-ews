@@ -412,13 +412,9 @@
   :custom
   (org-goto-interface 'outline-path-completion)
   (org-capture-templates
-   '(("r" "Nota rápida"
-      entry (file "~/denote/bujo/notas.org")
-      "* %?"
-      :empty-lines 1)
-     ("d" "Nota en el diario"
-      plain (file+datetree "~/denote/bujo/diario.org")
-      "%?"
+   '(("e" "Evento 📆"
+      entry (file+datetree ql-journal-file )
+      "* 📆 %?\n:PROPERTIES:\n:creada: %U\n:nota: actividad\n:END:"
       :empty-lines 1)
      ("p" "Nota permanente" plain
       (file denote-last-path)
@@ -427,10 +423,13 @@
       :immediate-finish nil
       :kill-buffer t
       :jump-to-captured t)
-     ("t" "Tarea" entry
-      (file+headline "~/denote/bujo/tareas.org" "Capturadas ✅")
-      "* TODO %i%?"
-     :empty-lines 1)   
+     ("r" "Nota rápida 💡"
+      entry (file+datetree ql-journal-file )
+      "* 💡 %?\n:PROPERTIES:\n:creada: %U\n:nota: nota\n:END:"
+      :empty-lines 1)
+     ("t" "Tarea" entry (file+headline ql-tasks-file "Tareas")
+      "* TODO %?\n:PROPERTIES:\n:creada: %U\n:END:"
+      :empty-lines 1)
      )))
 
 ;; Denote
