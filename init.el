@@ -248,7 +248,11 @@
   (org-pretty-entities t)
   (org-use-sub-superscripts "{}")
   (org-id-link-to-org-use-id t)
-  (org-fold-catch-invisible-edits 'show))
+  (org-fold-catch-invisible-edits 'show) 
+;; Otros ajustes para org-mode
+  (org-log-done 'note)
+  (org-log-into-drawer t)
+  (org-reverse-note-order t))
 
 ;; Show hidden emphasis markers
 
@@ -288,12 +292,6 @@
   (org-modern-radio-target nil)
   (org-modern-statistics nil)
   (org-modern-progress nil))
-
-;; Otros ajustes para org-mode
-
-(setq org-log-done 'note)
-(org-log-into-drawer t)
-(org-reverse-note-order t)
 
 ;; INSPIRATION
 
@@ -450,7 +448,6 @@
 ;; Denote
 
 (setq denote-directory "~/denote")
-
 
 ;; Consult convenience functions
 
