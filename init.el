@@ -132,6 +132,9 @@
 
 (use-package ef-themes)
 
+;; like `load-theme' but also call `ef-themes-post-load-hook'
+(ef-themes-select 'ef-dark)
+
 ;; Mixed-pitch mode
 
 (use-package mixed-pitch
