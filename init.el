@@ -413,8 +413,8 @@
   (org-goto-interface 'outline-path-completion)
   (org-capture-templates
    '(("e" "Evento 📆"
-      entry (file+datetree ql-journal-file )
-      "* 📆 %?\n:PROPERTIES:\n:creada: %U\n:nota: actividad\n:END:"
+      plain (file+datetree ql-journal-file )
+      "- 📆 %?\n:PROPERTIES:\n:creada: %U\n:nota: actividad\n:END:"
       :empty-lines 1)
      ("p" "Nota permanente" plain
       (file denote-last-path)
@@ -424,8 +424,8 @@
       :kill-buffer t
       :jump-to-captured t)
      ("r" "Nota rápida 💡"
-      entry (file+datetree ql-journal-file )
-      "* 💡 %?\n:PROPERTIES:\n:creada: %U\n:nota: nota\n:END:"
+      plain (file+datetree ql-journal-file )
+      "- 💡 %?\n:PROPERTIES:\n:creada: %U\n:nota: nota\n:END:"
       :empty-lines 1)
      ("t" "Tarea" entry (file+headline ql-tasks-file "Tareas")
       "* TODO %?\n:PROPERTIES:\n:creada: %U\n:END:"
