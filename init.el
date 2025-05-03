@@ -705,19 +705,78 @@
 
 ;;; ADMINISTRATION
 
+;; Mis ficheros de agenda
+
+(setq org-agenda-files (list ql-tasks-file))
+
+;; Mis etiquetas
+
+(setq org-tag-alist-for-agenda
+      '(;; áreas
+        ("@Hogar" . ?H)
+        ("@Sysadmin" . ?S)
+	("@Ocio" . ?O)
+	("@Blog" . ?B)
+      
+        ;; Entornos
+        ("_Ordenador" . ?C)
+        ("_Teléfono" . ?T)
+	("_Escritorio" . ?E)
+        ("_Calle" . ?R)
+
+        ;; Tipo/Estado
+        ("_Procesar" . ?D)
+        ("_Acción" . ?N)
+	("_Proyecto" . ?P)
+	("_Hábito" . ?h)
+
+        ;; Actividaes
+        ("@planificar" . ?p)
+        ("@configurar" . ?c)
+        ("@escribir" . ?w)
+        ("@investigar" . ?i)
+        ("@email" . ?e)
+        ("@llamar" . ?l)
+	("@publicar" . ?b)
+        ("@recados" . ?r)))
+
+;; Anotar log
+(setq org-agenda-start-with-log-mode t)
+
+;; Visualización de la agenda
+
+;; Abrir la agenda en una ventana única
+(setq org-agenda-window-setup 'only-window)
+
+;; Ajustar la vista de columnas
+(setq org-agenda-prefix-format
+      '((agenda . " %b ")
+        (todo   . " %b ")
+        (tags   . " %b ")
+        (search . " %b ")))
+
+(setq org-columns-default-format "%PRIORITY %25ITEM %SCHEDULED %DEADLINE %TAGS")
+
+;; Teclas para la agenda
+(global-set-key (kbd "C-c a") 'org-agenda)
+
+;; Eliminr las etiquetas del archivo
+(setq org-agenda-remove-tags t)
+
+;; VISTAS PARA LA AGENDA
+;; Tareas capturadas por ubicar
+
 ;; Bind org agenda command and custom agenda
 
-(use-package org
-  :custom
-  (org-agenda-custom-commands
-   '(("e" "Agenda, next actions and waiting"
-      ((agenda "" ((org-agenda-overriding-header "Next three days:")
-                   (org-agenda-span 3)
-                   (org-agenda-start-on-weekday nil)))
-       (todo "NEXT" ((org-agenda-overriding-header "Next Actions:")))
-       (todo "WAIT" ((org-agenda-overriding-header "Waiting:")))))))
-  :bind
-  (("C-c a" . org-agenda)))
+(setq org-agenda-custom-commands
+      '(("0" "Tareas por organizar" tags-todo "+_Procesar")
+        ("t" agenda "Tareas de hoy"
+               ((org-agenda-span 'day)
+                (org-agenda-entry-types '(:deadline :scheduled))
+                (org-agenda-skip-function '(org-agenda-skip-deadline-if-shown))
+                (org-agenda-overriding-header "Tareas para hoy")))
+        ("p" "Lista de Proyectos" tags-todo "+_Proyecto")
+        ("h" "Lista de Proyectos parados" todo "HOLD")))
 
 ;; FILE MANAGEMENT
 
