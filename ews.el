@@ -323,3 +323,6 @@ generate links in titlecase for attachments."
 (defconst ql-tasks-file       "~/denote/20250426T191557--trabajo__bujo.org"   "Archivo de tareas.")
 (defconst ql-collections-file "~/denote/20250430T125832--colecciones__bujo.org" "Archivo de tareas archivadas.")
 (defconst ql-archive-file     "~/denote/20250430T125950--archivo__bujo.org" "Archivo de tareas archivadas.")
+
+;;; MIS FUNCIONES
+
