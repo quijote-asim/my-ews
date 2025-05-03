@@ -104,6 +104,11 @@
 
 (setq-default use-short-answers t)
 
+;; Desactiva C-z y C-x z para evitar ejecutar suspend-frame por error
+
+(global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "C-x C-z"))
+
 ;; Scratch buffer settings
 
 (setq initial-major-mode 'org-mode
@@ -423,9 +428,9 @@
       :immediate-finish nil
       :kill-buffer t
       :jump-to-captured t)
-     ("r" "Nota rápida 💡"
+     ("r" "Nota rápida 📝"
       plain (file+datetree ql-journal-file )
-      "- 💡 %?\n:PROPERTIES:\n:creada: %U\n:nota: nota\n:END:"
+      "- 📝 %?\n:PROPERTIES:\n:creada: %U\n:nota: nota\n:END:"
       :empty-lines 1)
      ("t" "Tarea" entry (file+headline ql-tasks-file "Tareas")
       "* TODO %?\n:PROPERTIES:\n:creada: %U\n:END:"
