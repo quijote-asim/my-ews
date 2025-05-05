@@ -709,6 +709,14 @@
 
 (setq org-agenda-files (list ql-tasks-file))
 
+;; Ficheros para organizar
+
+(setq org-refile-targets
+      '((ql-tasks-file :maxlevel . 2)  ; agenda
+        (ql-collections-file :maxlevel . 3)  ; Colecciones
+        (ql-index-file :maxlevel . 2)  ; fichero de indice
+        (ql-archive-file :maxlevel . 3))) ; Archive
+
 ;; Mis etiquetas
 
 (setq org-tag-alist-for-agenda
