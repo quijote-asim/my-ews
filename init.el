@@ -83,7 +83,8 @@
    "dvipng"
    "latex"
    "hunspell"
-   "git"))
+   "git"
+   "trans"))
 
 ;;; LOOK AND FEEL
 
