@@ -444,7 +444,7 @@
   :defer t
   :custom
   (denote-sort-keywords t)
-  (denote-link-description-function #'ews-denote-link-description-title-case)
+;;  (denote-link-description-function #'ews-denote-link-description-title-case) ; eliminada para arreglar el formato de los títulos
   :hook
   (dired-mode . denote-dired-mode)
   :custom-face
