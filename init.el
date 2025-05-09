@@ -434,7 +434,7 @@
       "- 📝 %?"
       :empty-lines 1)
      ("t" "Tarea" entry (file+headline ql-tasks-file "Tareas")
-      "* TODO %?\n:PROPERTIES:\n:creada: %U\n:END:"
+      "* TAREA %?\n:PROPERTIES:\n:creada: %U\n:END:"
       :empty-lines 1)
      )))
 
@@ -782,7 +782,7 @@
         ("t" agenda "Tareas de hoy"
                ((org-agenda-span 'day)
                 (org-agenda-entry-types '(:deadline :scheduled))
-                (org-agenda-skip-function '(org-agenda-skip-deadline-if-shown))
+       ;;         (org-agenda-skip-function '(org-agenda-skip-deadline-if-shown))
                 (org-agenda-overriding-header "Tareas para hoy")))
         ("p" "Lista de Proyectos" tags-todo "+_Proyecto")
         ("h" "Lista de Proyectos parados" todo "HOLD")))
