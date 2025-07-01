@@ -864,3 +864,117 @@
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((dot . t)))
+
+;;;; Mis añadidos especiales
+
+
+;;; ql-org-headers.el --- Gestión automática de encabezados Org -*- lexical-binding: t; -*-
+
+;; Author: Quijote Libre
+;; Created: 2025-06-30
+;; Keywords: org, metadata, automation
+;; Version: 0.3
+
+;;; Commentary:
+;; Inserta y actualiza automáticamente los encabezados:
+;; - #+author: Quijote Libre
+;; - #+lastmod: con la fecha actual
+;; - #+startup: content
+;; Respeta los encabezados fijos de Denote y evita duplicados.
+
+;;; Code:
+
+(defun ql/org-clean-and-insert-headers ()
+  "Insertar o actualizar encabezados Org: author, lastmod y startup."
+  (save-excursion
+    (goto-char (point-min))
+    (let* ((timestamp (format-time-string "%Y-%m-%d %a %H:%M"))
+           (is-denote (and buffer-file-name
+                           (boundp 'denote-directory)
+                           (string-prefix-p (expand-file-name denote-directory)
+                                            (expand-file-name buffer-file-name))))
+           (insert-pos nil))
+
+      ;; 1. Eliminar duplicados
+      (dolist (header '("author" "lastmod" "startup"))
+        (goto-char (point-min))
+        (let ((found nil))
+          (while (re-search-forward (format "^#\+%s:.*$" header) nil t)
+            (if (not found)
+                (setq found t)
+              (beginning-of-line)
+              (kill-line 1)))))
+
+      ;; 2. Detectar existencia después de limpieza
+      (goto-char (point-min))
+      (let ((author-exists (re-search-forward "^#\+author:" nil t))
+            (lastmod-exists (progn (goto-char (point-min)) (re-search-forward "^#\+lastmod:" nil t)))
+            (startup-exists (progn (goto-char (point-min)) (re-search-forward "^#\+startup:" nil t))))
+
+        ;; 3. Calcular posición de inserción
+        (goto-char (point-min))
+        (if is-denote
+            (let ((headers '("title" "date" "filetags" "identifier"))
+                  (max-end 0))
+              (dolist (hdr headers)
+                (goto-char (point-min))
+                (when (re-search-forward (format "^#\+%s:.*$" hdr) nil t)
+                  (setq max-end (max max-end (point)))))
+              (setq insert-pos max-end))
+          ;; No Denote
+          (when (re-search-forward "^\([^#]\|$\)" nil t)
+            (beginning-of-line)
+            (setq insert-pos (point))))
+
+        ;; 4. Insertar encabezados que faltan
+        (goto-char insert-pos)
+        (unless (bolp) (insert "
+"))
+        (unless author-exists
+          (insert "#+author: Quijote Libre
+"))
+        (unless lastmod-exists
+          (insert (format "#+lastmod: <%s>
+" timestamp)))
+
+        ;; 5. Actualizar lastmod si ya existía
+        (when lastmod-exists
+          (goto-char (point-min))
+          (when (re-search-forward "^#\+lastmod:.*$" nil t)
+            (replace-match (format "#+lastmod: <%s>" timestamp))))
+
+
+	;; 6. Insertar startup si falta
+(unless startup-exists
+  (goto-char (point-min))
+  (if (re-search-forward "^#\\+lastmod:.*$" nil t)
+      (progn
+        (end-of-line)
+        (insert "\n#+startup: content"))
+    ;; Si no hay lastmod, buscar dónde termina el bloque de encabezados
+    (goto-char (point-min))
+    (when (re-search-forward "^\\([^#]\\|$\\)" nil t)
+      (beginning-of-line)
+      (unless (bolp) (insert "\n"))
+      (insert "#+startup: content\n"))))))
+
+(defun ql/org-setup-header-management ()
+  "Activar la actualización automática de encabezados en archivos Org."
+  (when (and buffer-file-name
+             (string-suffix-p ".org" buffer-file-name))
+    (add-hook 'before-save-hook #'ql/org-clean-and-insert-headers nil t)))
+
+(add-hook 'find-file-hook #'ql/org-setup-header-management)
+
+(defun ql/org-clean-headers-buffer ()
+  "Ejecutar manualmente la limpieza y actualización de encabezados en el buffer actual."
+  (interactive)
+  (if (and buffer-file-name
+           (string-suffix-p ".org" buffer-file-name))
+      (progn
+        (ql/org-clean-and-insert-headers)
+        (message "Encabezados Org actualizados."))
+    (message "Este buffer no es un archivo .org válido.")))
+
+(provide 'ql-org-headers)
+;;; ql-org-headers.el ends here
