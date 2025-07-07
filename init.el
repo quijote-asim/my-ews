@@ -467,7 +467,7 @@
 
 ;; Denote
 
-(setq denote-directory "~/work/notas")
+(setq denote-directory "~/Notas")
 
 ;; Consult convenience functions
 

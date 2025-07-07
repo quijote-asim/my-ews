@@ -40,13 +40,13 @@
   :link '(url-link :tag "Homepage" "https://lucidmanager.org/tags/emacs/"))
 
 (defcustom ews-bibtex-directory
-  (concat (file-name-as-directory (getenv "HOME")) "org/lib")
+  (concat (file-name-as-directory (getenv "HOME")) "Documentos/bibl/lib")
   "Location of BibTeX files and attachments."
   :group 'ews
   :type 'directory)
 
 (defcustom ews-denote-para-keywords
-  '("projects" "areas" "resources" "archives")
+  '("Proyectos" "Áreas" "Recursos" "Archivos")
   "List of keywords to use for implementing the PARA method with Denote."
   :group 'ews
   :type 'list)
