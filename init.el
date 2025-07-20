@@ -97,6 +97,10 @@
 
 (setq vc-follow-symlinks t)
 
+;; Poner el fondo transparente
+(set-frame-parameter (selected-frame) 'alpha '(92 . 90))
+(add-to-list 'default-frame-alist '(alpha . (92 . 90)))
+
 ;; Para maximizr al arrancar
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -444,7 +448,7 @@
   :defer t
   :custom
   (denote-sort-keywords t)
-;;  (denote-link-description-function #'ews-denote-link-description-title-case) ; eliminada para arreglar el formato de los títulos
+  (denote-link-description-function #'ews-denote-link-description-title-case) ; eliminada para arreglar el formato de los títulos
   :hook
   (dired-mode . denote-dired-mode)
   :custom-face
@@ -477,6 +481,27 @@
    ("C-c w g" . consult-grep))
   :config
   (add-to-list 'consult-preview-allowed-hooks 'visual-line-mode))
+
+;; denote-journal
+
+(use-package denote-journal
+  :ensure t
+  ;; Bind those to some key for your convenience.
+  :bind
+  (( "C-c j c" . denote-journal-new-entry)
+   ( "C-c j d" . denote-journal-new-or-existing-entry)
+   ( "C-c j l" . denote-journal-link-or-create-entry ))
+  :hook (calendar-mode . denote-journal-calendar-mode)
+  :config
+  ;; Use the "journal" subdirectory of the `denote-directory'.  Set this
+  ;; to nil to use the `denote-directory' instead.
+  (setq denote-journal-directory
+        (expand-file-name "diario" denote-directory))
+  ;; Default keyword for new journal entries. It can also be a list of
+  ;; strings.
+  (setq denote-journal-keyword "diario")
+  ;; Read the doc string of `denote-journal-title-format'.
+  (setq denote-journal-title-format 'day-date-month-year))
 
 ;; Consult-Notes for easy access to notes
 
