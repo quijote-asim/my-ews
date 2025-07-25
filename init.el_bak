@@ -249,7 +249,7 @@
 (use-package flyspell
   :custom
   (ispell-program-name "hunspell")
-  (ispell-dictionary ews-hunspell-dictionaries)
+  (ispell-dictionary (mapconcat 'identity ews-hunspell-dictionaries ","))
   (flyspell-mark-duplications-flag nil) ;; Writegood mode does this
   (org-fold-core-style 'overlays) ;; Fix Org mode bug
   :config
@@ -293,6 +293,7 @@
         ("Parado" . (:foreground "gray" :weight bold))
         ("Hecho" . (:foreground "green" :weight bold))
         ("Cancelado" . (:foreground "yellow" :weight bold))))
+
 
 ;; Show hidden emphasis markers
 
@@ -1017,4 +1018,5 @@
     (message "Este buffer no es un archivo .org válido.")))
 
 (provide 'ql-org-headers)
+
 ;;; ql-org-headers.el ends here

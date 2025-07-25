@@ -51,10 +51,11 @@
   :group 'ews
   :type 'list)
 
-(defcustom ews-hunspell-dictionaries "es_ES,en_US"
-  "Comma-separated list of Hunspell dictionaries."
-  :group 'ews
-  :type 'list)
+;; Definir múltiples diccionarios
+  (defcustom ews-hunspell-dictionaries '("es_ES" "en_US")
+    "Lista de diccionarios de Hunspell a utilizar simultáneamente."
+    :group 'ews
+    :type '(repeat string))
 
 (defcustom ews-org-heading-level-capitalise nil
   "Minimum level of Org headings to be capitalised
