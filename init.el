@@ -249,7 +249,7 @@
 (use-package flyspell
   :custom
   (ispell-program-name "hunspell")
-  (ispell-dictionary ews-hunspell-dictionaries)
+  (ispell-dictionary (mapconcat 'identity ews-hunspell-dictionaries ","))
   (flyspell-mark-duplications-flag nil) ;; Writegood mode does this
   (org-fold-core-style 'overlays) ;; Fix Org mode bug
   :config
@@ -437,23 +437,12 @@
   :custom
   (org-goto-interface 'outline-path-completion)
   (org-capture-templates
-   '(("e" "Evento 📆"
+   '(("d" "Nota al diario 📆"
       plain (file+datetree ql-journal-file )
-      "- 📆 %?"
-      :empty-lines 1)
-     ("p" "Nota permanente" plain
-      (file denote-last-path)
-      #'denote-org-capture
-      :no-save t
-      :immediate-finish nil
-      :kill-buffer t
-      :jump-to-captured t)
-     ("r" "Nota rápida 📝"
-      plain (file+datetree ql-journal-file )
-      "- 📝 %?"
+      "+  %?"
       :empty-lines 1)
      ("t" "Tarea" entry (file+headline ql-tasks-file "Tareas")
-      "* TAREA %?\n:PROPERTIES:\n:creada: %U\n:END:"
+      "* Tareas: %?\n:PROPERTIES:\n:CREATED: %U\n:END:"
       :empty-lines 1)
      )))
 
@@ -496,27 +485,6 @@
    ("C-c w g" . consult-grep))
   :config
   (add-to-list 'consult-preview-allowed-hooks 'visual-line-mode))
-
-;; denote-journal
-
-(use-package denote-journal
-  :ensure t
-  ;; Bind those to some key for your convenience.
-  :bind
-  (( "C-c j c" . denote-journal-new-entry)
-   ( "C-c j d" . denote-journal-new-or-existing-entry)
-   ( "C-c j l" . denote-journal-link-or-create-entry ))
-  :hook (calendar-mode . denote-journal-calendar-mode)
-  :config
-  ;; Use the "journal" subdirectory of the `denote-directory'.  Set this
-  ;; to nil to use the `denote-directory' instead.
-  (setq denote-journal-directory
-        (expand-file-name "diario" denote-directory))
-  ;; Default keyword for new journal entries. It can also be a list of
-  ;; strings.
-  (setq denote-journal-keyword "diario")
-  ;; Read the doc string of `denote-journal-title-format'.
-  (setq denote-journal-title-format 'day-date-month-year))
 
 ;; Consult-Notes for easy access to notes
 
@@ -1017,4 +985,5 @@
     (message "Este buffer no es un archivo .org válido.")))
 
 (provide 'ql-org-headers)
+
 ;;; ql-org-headers.el ends here

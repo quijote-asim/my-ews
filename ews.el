@@ -46,15 +46,16 @@
   :type 'directory)
 
 (defcustom ews-denote-para-keywords
-  '("Proyectos" "Áreas" "Recursos" "Archivos")
+  '("Proyecto" "Área" "Recurso" "Archivo")
   "List of keywords to use for implementing the PARA method with Denote."
   :group 'ews
   :type 'list)
 
-(defcustom ews-hunspell-dictionaries "es_ES,en_US"
-  "Comma-separated list of Hunspell dictionaries."
-  :group 'ews
-  :type 'list)
+;; Definir múltiples diccionarios
+  (defcustom ews-hunspell-dictionaries '("es_ES" "en_US")
+    "Lista de diccionarios de Hunspell a utilizar simultáneamente."
+    :group 'ews
+    :type '(repeat string))
 
 (defcustom ews-org-heading-level-capitalise nil
   "Minimum level of Org headings to be capitalised
@@ -318,11 +319,11 @@ generate links in titlecase for attachments."
 
 ;; Definición de ficheros clave
 
-(defconst ql-index-file     "~/work/notas/20250430T130243--índice__bujo.org"    "Archivo índice del sistema.")
-(defconst ql-journal-file     "~/work/notas/20250426T191311--diario__bujo.org"    "Archivo de notas diarias.")
-(defconst ql-tasks-file       "~/work/notas/20250426T191557--trabajo__bujo.org"   "Archivo de tareas.")
-(defconst ql-collections-file "~/work/notas/20250430T125832--colecciones__bujo.org" "Archivo de tareas archivadas.")
-(defconst ql-archive-file     "~/work/notas/20250430T125950--archivo__bujo.org" "Archivo de tareas archivadas.")
+(defconst ql-index-file     "~/work/notas/20250430T130243==bujo--índice-de-mi-bullet-journal-digital.org"    "Archivo índice del sistema.")
+(defconst ql-journal-file     "~/work/notas/20250426T191311==bujo--diario-personal.org"    "Archivo de notas diarias.")
+(defconst ql-tasks-file       "~/work/notas/20250426T191557==bujo--lista-de-tareas.org"   "Archivo de tareas.")
+;; (defconst ql-collections-file "~/work/notas/20250430T125832--colecciones__bujo.org" "Archivo de tareas archivadas.")
+(defconst ql-archive-file     "~/work/notas/20250430T125950==bujo--archivador-de-mi-sistema.org" "Archivo de tareas archivadas.")
 
 ;;; MIS FUNCIONES
 
