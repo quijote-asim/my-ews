@@ -903,34 +903,5 @@
 
 (add-hook 'after-save-hook 'ql/hugo-export-if-publicar)
 
-;; Funciones para fechas
-
-(defun ql/hugo-set-publish-date ()
-  "Establecer la fecha de publicación en la cabecera del archivo Org."
-  (when (string= (file-name-extension (buffer-file-name)) "org")
-    (save-excursion
-      (goto-char (point-min))
-      (if (re-search-forward "^#\\+DATE:" nil t)
-          (progn
-            (replace-match (format-time-string "%Y-%m-%d") nil nil)
-            (message "Fecha de publicación actualizada a %s" (format-time-string "%Y-%m-%d")))
-        (insert (format "#+DATE: %s\n" (format-time-string "%Y-%m-%d")))))))
-
-(defun ql/hugo-last-modified-date ()
-  "Establecer la fecha de última modificación en la cabecera del archivo Org."
-  (when (string= (file-name-extension (buffer-file-name)) "org")
-    (save-excursion
-      (goto-char (point-min))
-      (if (re-search-forward "^#\\+LAST_MODIFIED:" nil t)
-          (progn
-            (replace-match (format-time-string "%Y-%m-%d") nil nil)
-            (message "Fecha de última modificación actualizada a %s" (format-time-string "%Y-%m-%d")))
-        (insert (format "#+LAST_MODIFIED: %s\n" (format-time-string "%Y-%m-%d")))))))
-
-(add-hook 'org-mode-hook
-          (lambda ()
-            (add-hook 'before-save-hook 'my-org-set-last-modified-date nil 'local)
-            (my-org-set-publish-date)))
-
 ;;; ql-org-headers.el ends here
 
