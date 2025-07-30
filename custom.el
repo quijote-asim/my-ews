@@ -5,20 +5,13 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(denote-link-description-format #'ews-denote-link-description-title-case nil nil "Customized with use-package denote")
+ '(font-use-system-font t)
  '(menu-bar-mode nil)
- '(package-selected-packages
-   '(balanced-windows biblio citar-denote consult-notes denote-explore
-		      denote-journal denote-org ef-themes elfeed-org
-		      emms fountain-mode helpful lorem-ipsum
-		      marginalia markdown-mode mixed-pitch
-		      modus-themes nov olivetti openwith orderless
-		      org-appear org-fragtog org-modern org-web-tools
-		      ox-epub powerthesaurus spacious-padding
-		      titlecase undo-tree vertico writegood-mode))
+ '(package-selected-packages nil)
  '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Fira Sans" :foundry "CTDB" :slant normal :weight semi-light :height 139 :width normal)))))
+ '(default ((t (:family "Adwaita Mono" :foundry "UKWN" :slant normal :weight regular :height 139 :width normal)))))

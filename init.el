@@ -875,115 +875,62 @@
 
 ;;;; Mis añadidos especiales
 
+;;; ox-hugo mi herramienta para publicar
 
-;;; ql-org-headers.el --- Gestión automática de encabezados Org -*- lexical-binding: t; -*-
+;; Instala/activa ox-hugo
+(use-package ox-hugo
+  :ensure t
+  :after org
+  :commands (org-hugo-export-wim-to-md)
+  :custom
+  (org-hugo-base-dir "~/Proyectos/Blog/my-blog/")  ;; ruta raíz de tu sitio Hugo
+  (org-hugo-auto-export-on-save t))                ;; habilita auto-export al guardar
 
-;; Author: Quijote Libre
-;; Created: 2025-06-30
-;; Keywords: org, metadata, automation
-;; Version: 0.3
+;; archivo a crear en  blog/.dir-locals.el
+;; Con el se convierten automaticamente los archivos que se inserten
+;; ~/org/denote/.dir-locals.el
+;; ((org-mode . ((eval . (org-hugo-auto-export-mode)))))
 
-;;; Commentary:
-;; Inserta y actualiza automáticamente los encabezados:
-;; - #+author: Quijote Libre
-;; - #+lastmod: con la fecha actual
-;; - #+startup: content
-;; Respeta los encabezados fijos de Denote y evita duplicados.
+;; Establecer las carpetas de exportación
+(setq org-hugo-auto-export-directory "~/Proyectos/Blog/my-blog/content/blog/")
+(setq org-hugo-auto-export-pages-directory "~/Proyectos/Blog/my-blog/content/pages/")
 
-;;; Code:
+(defun ql/hugo-export-if-publicar ()
+  "Exportar solo archivos que contengan '__publicar.org' en el nombre."
+  (when (and (string= (file-name-extension (buffer-file-name)) "org")
+             (string-match "__publicar\\.org$" (file-name-nondirectory (buffer-file-name))))
+    (org-hugo-auto-export-to-md)))
 
-(defun ql/org-clean-and-insert-headers ()
-  "Insertar o actualizar encabezados Org: author, lastmod y startup."
-  (save-excursion
-    (goto-char (point-min))
-    (let* ((timestamp (format-time-string "%Y-%m-%d %a %H:%M"))
-           (is-denote (and buffer-file-name
-                           (boundp 'denote-directory)
-                           (string-prefix-p (expand-file-name denote-directory)
-                                            (expand-file-name buffer-file-name))))
-           (insert-pos nil))
+(add-hook 'after-save-hook 'ql/hugo-export-if-publicar)
 
-      ;; 1. Eliminar duplicados
-      (dolist (header '("author" "lastmod" "startup"))
-        (goto-char (point-min))
-        (let ((found nil))
-          (while (re-search-forward (format "^#\+%s:.*$" header) nil t)
-            (if (not found)
-                (setq found t)
-              (beginning-of-line)
-              (kill-line 1)))))
+;; Funciones para fechas
 
-      ;; 2. Detectar existencia después de limpieza
+(defun ql/hugo-set-publish-date ()
+  "Establecer la fecha de publicación en la cabecera del archivo Org."
+  (when (string= (file-name-extension (buffer-file-name)) "org")
+    (save-excursion
       (goto-char (point-min))
-      (let ((author-exists (re-search-forward "^#\+author:" nil t))
-            (lastmod-exists (progn (goto-char (point-min)) (re-search-forward "^#\+lastmod:" nil t)))
-            (startup-exists (progn (goto-char (point-min)) (re-search-forward "^#\+startup:" nil t))))
+      (if (re-search-forward "^#\\+DATE:" nil t)
+          (progn
+            (replace-match (format-time-string "%Y-%m-%d") nil nil)
+            (message "Fecha de publicación actualizada a %s" (format-time-string "%Y-%m-%d")))
+        (insert (format "#+DATE: %s\n" (format-time-string "%Y-%m-%d")))))))
 
-        ;; 3. Calcular posición de inserción
-        (goto-char (point-min))
-        (if is-denote
-            (let ((headers '("title" "date" "filetags" "identifier"))
-                  (max-end 0))
-              (dolist (hdr headers)
-                (goto-char (point-min))
-                (when (re-search-forward (format "^#\+%s:.*$" hdr) nil t)
-                  (setq max-end (max max-end (point)))))
-              (setq insert-pos max-end))
-          ;; No Denote
-          (when (re-search-forward "^\([^#]\|$\)" nil t)
-            (beginning-of-line)
-            (setq insert-pos (point))))
+(defun ql/hugo-last-modified-date ()
+  "Establecer la fecha de última modificación en la cabecera del archivo Org."
+  (when (string= (file-name-extension (buffer-file-name)) "org")
+    (save-excursion
+      (goto-char (point-min))
+      (if (re-search-forward "^#\\+LAST_MODIFIED:" nil t)
+          (progn
+            (replace-match (format-time-string "%Y-%m-%d") nil nil)
+            (message "Fecha de última modificación actualizada a %s" (format-time-string "%Y-%m-%d")))
+        (insert (format "#+LAST_MODIFIED: %s\n" (format-time-string "%Y-%m-%d")))))))
 
-        ;; 4. Insertar encabezados que faltan
-        (goto-char insert-pos)
-        (unless (bolp) (insert "
-"))
-        (unless author-exists
-          (insert "#+author: Quijote Libre
-"))
-        (unless lastmod-exists
-          (insert (format "#+lastmod: <%s>
-" timestamp)))
-
-        ;; 5. Actualizar lastmod si ya existía
-        (when lastmod-exists
-          (goto-char (point-min))
-          (when (re-search-forward "^#\+lastmod:.*$" nil t)
-            (replace-match (format "#+lastmod: <%s>" timestamp))))
-
-
-	;; 6. Insertar startup si falta
-(unless startup-exists
-  (goto-char (point-min))
-  (if (re-search-forward "^#\\+lastmod:.*$" nil t)
-      (progn
-        (end-of-line)
-        (insert "\n#+startup: content"))
-    ;; Si no hay lastmod, buscar dónde termina el bloque de encabezados
-    (goto-char (point-min))
-    (when (re-search-forward "^\\([^#]\\|$\\)" nil t)
-      (beginning-of-line)
-      (unless (bolp) (insert "\n"))
-      (insert "#+startup: content\n"))))))
-
-(defun ql/org-setup-header-management ()
-  "Activar la actualización automática de encabezados en archivos Org."
-  (when (and buffer-file-name
-             (string-suffix-p ".org" buffer-file-name))
-    (add-hook 'before-save-hook #'ql/org-clean-and-insert-headers nil t)))
-
-(add-hook 'find-file-hook #'ql/org-setup-header-management)
-
-(defun ql/org-clean-headers-buffer ()
-  "Ejecutar manualmente la limpieza y actualización de encabezados en el buffer actual."
-  (interactive)
-  (if (and buffer-file-name
-           (string-suffix-p ".org" buffer-file-name))
-      (progn
-        (ql/org-clean-and-insert-headers)
-        (message "Encabezados Org actualizados."))
-    (message "Este buffer no es un archivo .org válido.")))
-
-(provide 'ql-org-headers)
+(add-hook 'org-mode-hook
+          (lambda ()
+            (add-hook 'before-save-hook 'my-org-set-last-modified-date nil 'local)
+            (my-org-set-publish-date)))
 
 ;;; ql-org-headers.el ends here
+

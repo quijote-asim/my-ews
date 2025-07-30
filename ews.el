@@ -319,11 +319,11 @@ generate links in titlecase for attachments."
 
 ;; Definición de ficheros clave
 
-(defconst ql-index-file     "~/work/notas/20250430T130243==bujo--índice-de-mi-bullet-journal-digital.org"    "Archivo índice del sistema.")
-(defconst ql-journal-file     "~/work/notas/20250426T191311==bujo--diario-personal.org"    "Archivo de notas diarias.")
-(defconst ql-tasks-file       "~/work/notas/20250426T191557==bujo--lista-de-tareas.org"   "Archivo de tareas.")
-;; (defconst ql-collections-file "~/work/notas/20250430T125832--colecciones__bujo.org" "Archivo de tareas archivadas.")
-(defconst ql-archive-file     "~/work/notas/20250430T125950==bujo--archivador-de-mi-sistema.org" "Archivo de tareas archivadas.")
+(defconst ql-index-file     "~/Notas/20250430T130243==bujo--índice-de-mi-bullet-journal-digital.org"    "Archivo índice del sistema.")
+(defconst ql-journal-file     "~/Notas/20250426T191311==bujo--diario-personal.org"    "Archivo de notas diarias.")
+(defconst ql-tasks-file       "~/Notas/20250426T191557==bujo--lista-de-tareas.org"   "Archivo de tareas.")
+;; (defconst ql-collections-file "~/Notas/20250430T125832--colecciones__bujo.org" "Archivo de tareas archivadas.")
+(defconst ql-archive-file     "~/Nnnotas/20250430T125950==bujo--archivador-de-mi-sistema.org" "Archivo de tareas archivadas.")
 
 ;;; MIS FUNCIONES
 
