@@ -23,10 +23,10 @@
 ;;
 ;; Emacs Writing Studio init file: https://lucidmanager.org/tags/emacs
 ;;
-;; This init file is tangled from: documents/ews-book/99-appendix.org
+;; This init file is tangled from: documents/99-appendix.org
 ;;
-;; This file is a starter kit for developing a configuration and is not a package
-;; that is regularly updated.
+;; This file provides a starter kit for developing a configuration and is
+;; not a package that is regularly updated.
 ;;
 ;;; Code:
 
@@ -34,18 +34,6 @@
 
 (when (< emacs-major-version 29)
   (error "Emacs Writing Studio requires version 29 or later"))
-
-;; Custom settings in a separate file and load the custom settings
-
-(setq-default custom-file (expand-file-name
-			     "custom.el"
-			     user-emacs-directory))
-
-(load custom-file :no-error-if-file-is-missing)
-
-;; Bind key for customising variables
-
-(keymap-global-set "C-c w v" 'customize-variable)
 
 ;; Set package archives
 
@@ -88,6 +76,7 @@
 
 ;;; LOOK AND FEEL
 
+(setq inhibit-splash-screen t)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
@@ -117,7 +106,10 @@
 ;; Scratch buffer settings
 
 (setq initial-major-mode 'org-mode
-      initial-scratch-message "#+title: Emacs Writing Studio\n#+subtitle: Scratch Buffer\nThe text in this buffer is not saved when exiting Emacs!\n\n")
+      initial-scratch-message (concat "#+title: Emacs Writing Studio\n"
+					"#+subtitle: Scratch Buffer\n\n"
+					"The text in this buffer is not saved "
+					"when exiting Emacs!\n\n"))
 
 ;; Spacious padding
 
@@ -214,7 +206,16 @@
   :custom
   (which-key-max-description-length 40)
   (which-key-lighter nil)
-  (which-key-sort-order 'which-key-description-order))
+  (which-key-sort-order 'which-key-description-order)
+  :init
+  (which-key-add-key-based-replacements
+    "C-c w"   "Emacs Writing Studio"
+    "C-c w b" "Bibliographic"
+    "C-c w d" "Denote"
+    "C-c w m" "Multimedia"
+    "C-c w s" "Spelling and Grammar"
+    "C-c w t" "Themes"
+    "C-c w x" "Explore"))
 
 ;; Contextual menu with right mouse button
 
@@ -269,7 +270,6 @@
   (org-hide-emphasis-markers t)
   (org-startup-with-inline-images t)
   (org-image-actual-width '(450))
-  (org-fold-catch-invisible-edits 'error)
   (org-pretty-entities t)
   (org-use-sub-superscripts "{}")
   (org-id-link-to-org-use-id t)
@@ -435,7 +435,6 @@
   (("C-c c" . org-capture)
    ("C-c l" . org-store-link))
   :custom
-  (org-goto-interface 'outline-path-completion)
   (org-capture-templates
    '(("d" "Nota al diario 📆"
       plain (file+datetree ql-journal-file )
@@ -452,7 +451,8 @@
   :defer t
   :custom
   (denote-sort-keywords t)
-  (denote-link-description-function #'ews-denote-link-description-title-case) ; eliminada para arreglar el formato de los títulos
+  (denote-link-description-function #'ews-denote-link-description-title-case)
+  (denote-rename-buffer-mode 1)
   :hook
   (dired-mode . denote-dired-mode)
   :custom-face
@@ -468,10 +468,15 @@
    ("C-c w d r" . denote-rename-file)
    ("C-c w d R" . denote-rename-file-using-front-matter)))
 
+;; Denote auxiliary packages
+
+(use-package denote-journal)
+
 (use-package denote-org
   :bind
-  (("C-c w d h" . denote-org-link-to-heading)
-   ("C-c w d s" . denote-org-extract-org-subtree)))
+  (("C-c w d h" . denote-org-link-to-heading)))
+
+(use-package denote-sequence)
 
 ;; Denote
 
@@ -555,15 +560,11 @@
   :bind
   (("C-c w o" . ews-olivetti)))
 
-;; Undo Tree
+;; Vundo
 
-(use-package undo-tree
-  :config
-  (global-undo-tree-mode)
-  :custom
-  (undo-tree-auto-save-history nil)
+(use-package vundo
   :bind
-  (("C-c w u" . undo-tree-visualise)))
+  (("C-M-/" . vundo)))
 
 ;; Export citations with Org Mode
 
@@ -582,10 +583,6 @@
   (dictionary-server "dict.org")
   :bind
   (("C-c w s d" . dictionary-lookup-definition)))
-
-(use-package powerthesaurus
-  :bind
-  (("C-c w s p" . powerthesaurus-transient)))
 
 ;; Writegood-Mode for weasel words, passive writing and repeated word detection
 
@@ -629,11 +626,9 @@
 ;; Enable Other text modes
 
 ;; Fountain mode for writing scripts
-
-(use-package fountain-mode)
-
 ;; Markdown mode
 
+(use-package fountain-mode)
 (use-package markdown-mode)
 
 ;; PUBLICATION
@@ -681,32 +676,28 @@
    'org-latex-classes
    '("ews"
      "\\documentclass[11pt, twoside, hidelinks]{memoir}
-      \\setstocksize{9.25in}{7.5in}
-      \\settrimmedsize{\\stockheight}{\\stockwidth}{*}
-      \\setlrmarginsandblock{1.5in}{1in}{*} 
-      \\setulmarginsandblock{1in}{1.5in}{*}
-      \\checkandfixthelayout
-      \\layout
-      \\setcounter{tocdepth}{0}
-      \\setsecnumdepth{subsection}
-      \\renewcommand{\\baselinestretch}{1.2}
-      \\setheadfoot{0.5in}{0.75in}
-      \\setlength{\\footskip}{0.8in}
-      \\chapterstyle{bianchi}
-      \\renewcommand{\\beforechapskip}{-30pt}
-      \\setsecheadstyle{\\normalfont \\raggedright \\textbf}
-      \\setsubsecheadstyle{\\normalfont \\raggedright \\emph}
-      \\setsubsubsecheadstyle{\\normalfont\\centering}
-      \\pagestyle{myheadings}
-      \\usepackage[font={small, it}]{caption}
-      \\usepackage{ccicons}
-      \\usepackage{ebgaramond}
-      \\usepackage[authoryear]{natbib}
-      \\bibliographystyle{apalike}
-      \\usepackage{svg}
-      \\hyphenation{mini-buffer}
-      \\renewcommand{\\LaTeX}{LaTeX}
-      \\renewcommand{\\TeX}{TeX}"
+        \\setstocksize{9.25in}{7.5in}
+        \\settrimmedsize{\\stockheight}{\\stockwidth}{*}
+        \\setlrmarginsandblock{1.5in}{1in}{*} 
+        \\setulmarginsandblock{1in}{1.5in}{*}
+        \\checkandfixthelayout
+        \\layout
+        \\setcounter{tocdepth}{0}
+        \\renewcommand{\\baselinestretch}{1.25}
+        \\setheadfoot{0.5in}{0.75in}
+        \\setlength{\\footskip}{0.8in}
+        \\chapterstyle{bianchi}
+        \\setsecheadstyle{\\normalfont \\raggedright \\textbf}
+        \\setsubsecheadstyle{\\normalfont \\raggedright \\emph}
+        \\setsubsubsecheadstyle{\\normalfont\\centering}
+        \\pagestyle{myheadings}
+        \\usepackage[font={small, it}]{caption}
+        \\usepackage{ccicons}
+        \\usepackage{ebgaramond}
+        \\usepackage[authoryear]{natbib}
+        \\bibliographystyle{apalike}
+        \\usepackage{svg}
+\\hyphenation{mini-buffer}"
      ("\\chapter{%s}" . "\\chapter*{%s}")
      ("\\section{%s}" . "\\section*{%s}")
      ("\\subsection{%s}" . "\\subsection*{%s}")
@@ -865,10 +856,23 @@
         ("C-<right>" . image-dired-display-next)
         ("C-<left>"  . image-dired-display-previous)))
 
+;; Bind key for customising variables
+
+(keymap-global-set "C-c w v" 'customize-variable)
+
+;; Custom settings in a separate file and load the custom settings
+
+(setq-default custom-file (expand-file-name
+			     "custom.el"
+			     user-emacs-directory))
+
+(load custom-file :no-error-if-file-is-missing)
+
 ;; ADVANCED UNDOCUMENTED EXPORT SETTINGS FOR EWS
 
-;; GraphViz for flow diagrams
+;; Use GraphViz for flow diagrams
 ;; requires GraphViz software
+
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((dot . t)))
