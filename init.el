@@ -441,8 +441,8 @@
       plain (file+datetree ql-journal-file )
       "+  %?"
       :empty-lines 1)
-     ("t" "Tarea" entry (file+headline ql-tasks-file "Tareas")
-      "* Tareas: %?\n:PROPERTIES:\n:CREATED: %U\n:END:"
+     ("t" "Tarea ✅" entry (file+headline ql-tasks-file "Tareas")
+      "* Tarea: %?\n:PROPERTIES:\n:CREATED: %U\n:END:"
       :empty-lines 1)
      )))
 
