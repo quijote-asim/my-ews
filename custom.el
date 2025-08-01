@@ -4,14 +4,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(denote-link-description-format #'ews-denote-link-description-title-case nil nil "Customized with use-package denote")
- '(font-use-system-font t)
  '(menu-bar-mode nil)
- '(package-selected-packages nil)
  '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Adwaita Mono" :foundry "UKWN" :slant normal :weight regular :height 139 :width normal)))))
+ '(default ((t (:family "Cascadia Code NF" :foundry "SAJA" :slant normal :weight regular :height 132 :width normal)))))

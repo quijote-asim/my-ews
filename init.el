@@ -255,7 +255,7 @@
   (org-fold-core-style 'overlays) ;; Fix Org mode bug
   :config
   (ispell-set-spellchecker-params)
-  (ispell-hunspell-add-multi-dic ews-hunspell-dictionaries)
+  (ispell-hunspell-add-multi-dic (mapconcat 'identity ews-hunspell-dictionaries ","))
   :hook
   (text-mode . flyspell-mode)
   :bind
@@ -438,12 +438,12 @@
   (org-capture-templates
    '(("d" "Nota al diario 📆"
       plain (file+datetree ql-journal-file )
-      "+  %?"
-      :empty-lines 1)
+      "+  %?\n"
+     ( :empty-lines 1))
      ("t" "Tarea ✅" entry (file+headline ql-tasks-file "Tareas")
       "* Tarea: %?\n:PROPERTIES:\n:CREATED: %U\n:END:"
-      :empty-lines 1)
-     )))
+     (:empty-lines 1)
+     ))))
 
 ;; Denote
 
