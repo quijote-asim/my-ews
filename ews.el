@@ -289,6 +289,33 @@ Customise `titlecase-style' for styling."
 	 (when (<= level (or ews-org-heading-level-capitalise 999))
 	   (org-edit-headline new-heading)))))))
 
+;; (defun ews-denote-link-description-title-case (file)
+
+;;   "Return link description for FILE.
+
+
+;; If the region is active, use it as the description.
+
+;; The title is formatted with the `titlecase' package.
+
+
+;; This function is useful as the value of `denote-link-description-function' to
+
+;; generate links in titlecase for attachments."
+;;   (require 'titlecase)
+;;   (let* ((file-type (denote-filetype-heuristics file))
+;;           (title (denote-retrieve-title-or-filename file file-type))
+;; 	 (clean-title (if (string-match-p " " title)
+;; 			  title
+;; 			(replace-regexp-in-string "\\([a-zA-Z0-9]\\)-\\([a-zA-Z0-9]\\)" "\\1 \\2" title)))
+;;          (region-text (denote--get-active-region-content)))
+;;    (cond
+;;      (region-text region-text)
+;;      (title (format "%s" (titlecase--string clean-title titlecase-style)))
+;;     (t ""))))
+
+;; Versión de Protesilaos
+
 (defun ews-denote-link-description-title-case (file)
   "Return link description for FILE.
 
@@ -299,15 +326,16 @@ This function is useful as the value of `denote-link-description-function' to
 generate links in titlecase for attachments."
   (require 'titlecase)
   (let* ((file-type (denote-filetype-heuristics file))
-         (title (denote-retrieve-title-or-filename file file-type))
-	 (clean-title (if (string-match-p " " title)
-			  title
-			(replace-regexp-in-string "\\([a-zA-Z0-9]\\)-\\([a-zA-Z0-9]\\)" "\\1 \\2" title)))
-         (region-text (denote--get-active-region-content)))
+         (title (denote-retrieve-title-or-filename file file-type)))
     (cond
-     (region-text region-text)
-     (title (format "%s" (titlecase--string clean-title titlecase-style)))
-     (t ""))))
+     ((denote--get-active-region-content))
+     ((or (null title) (string-blank-p title))
+      "")
+     ((string-match-p " " title) ; Maybe you want `string-blank-p' here?
+      title)
+     (t
+      (let ((clean-title (replace-regexp-in-string "\\([a-zA-Z0-9]\\)-\\([a-zA-Z0-9]\\)" "\\1 \\2" title)))
+        (format "%s" (titlecase--string clean-title titlecase-style)))))))
 
 ;;; ews.el --- files for Quijote Libre
 
