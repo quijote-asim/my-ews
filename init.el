@@ -436,14 +436,10 @@
    ("C-c l" . org-store-link))
   :custom
   (org-capture-templates
-   '(("d" "Nota al diario 📆"
-      plain (file+datetree ql-journal-file )
-      "+  %?\n"
-     ( :empty-lines 1))
-     ("t" "Tarea ✅" entry (file+headline ql-tasks-file "Tareas")
+   '(("t" "Tarea ✅" entry (file+headline ql-tasks-file "Tareas")
       "* Tarea: %?\n:PROPERTIES:\n:CREATED: %U\n:END:"
-     (:empty-lines 1)
-     ))))
+     :empty-lines 1)
+     )))
 
 ;; Denote
 
@@ -906,6 +902,36 @@
     (org-hugo-auto-export-to-md)))
 
 (add-hook 'after-save-hook 'ql/hugo-export-if-publicar)
+
+;; Incluye denote-jornal para gestionar el diario
+
+(use-package denote-journal
+  :ensure t
+  ;; Bind those to some key for your convenience.
+  :bind (("C-c w j n". denote-journal-new-entry)
+	 ("C-c w j u".  denote-journal-new-or-existing-entry)
+	 ("C-c w j l".  denote-journal-link-or-create-entry ))
+  :hook (calendar-mode . denote-journal-calendar-mode)
+  :config
+  ;; Use the "diario" subdirectory of the `denote-directory'.  Set this
+  ;; to nil to use the `denote-directory' instead.
+  (setq denote-journal-directory
+        (expand-file-name "diario" denote-directory))
+  ;; Default keyword for new journal entries. It can also be a list of
+  ;; strings.
+  (setq denote-journal-keyword "dia")
+  ;; Read the doc string of `denote-journal-title-format'.
+  (setq denote-journal-title-format 'day-date-month-year))
+
+;; Capturas al diario
+
+(with-eval-after-load 'org-capture
+  (add-to-list 'org-capture-templates
+               '("d" "Nota al diario 📆"
+		 entry (file denote-journal-path-to-new-or-existing-entry)
+                 "* %U %?\n%i\n%a"
+                 :kill-buffer t
+                 :empty-lines 1)))
 
 ;;; ql-org-headers.el ends here
 
