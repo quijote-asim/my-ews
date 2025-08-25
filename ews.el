@@ -40,7 +40,7 @@
   :link '(url-link :tag "Homepage" "https://lucidmanager.org/tags/emacs/"))
 
 (defcustom ews-bibtex-directory
-  (concat (file-name-as-directory (getenv "HOME")) "Documentos/bibl/lib")
+  (concat (file-name-as-directory (getenv "HOME")) "archive/bibtex")
   "Location of BibTeX files and attachments."
   :group 'ews
   :type 'directory)
@@ -347,11 +347,12 @@ generate links in titlecase for attachments."
 
 ;; Definición de ficheros clave
 
-(defconst ql-index-file     "~/Notas/20250430T130243==bujo--índice-de-mi-bullet-journal-digital.org"    "Archivo índice del sistema.")
-(defconst ql-journal-file     "~/Notas/20250426T191311==bujo--diario-personal.org"    "Archivo de notas diarias.")
-(defconst ql-tasks-file       "~/Notas/20250426T191557==bujo--lista-de-tareas.org"   "Archivo de tareas.")
-;; (defconst ql-collections-file "~/Notas/20250430T125832--colecciones__bujo.org" "Archivo de tareas archivadas.")
-(defconst ql-archive-file     "~/Nnnotas/20250430T125950==bujo--archivador-de-mi-sistema.org" "Archivo de tareas archivadas.")
+(defconst ql-index-file     "~/org/20250430T130243==bujo--índice-de-mi-bullet-journal-digital.org"    "Archivo índice del sistema.")
+(defconst ql-journal-file     "~/org/20250426T191311==bujo--diario-personal.org"    "Archivo de notas diarias")
+(defconst ql-tasks-file       "~/org/20250426T191557==bujo--lista-de-tareas.org"   "Archivo de tareas")
+;; (defconst ql-collections-file "~/org/20250430T125832--colecciones__bujo.org" "Archivo de tareas archivadas")
+(defconst ql-archive-file     "~/org/20250430T125950==bujo--archivador-de-mi-sistema.org" "Archivo de tareas archivadas")
+(defconst ql-elfeed-file     "~/org/20250221T153515==bujo--fuentes-rss__lista.org" "Archivo de fuentes rss")
 
 ;;; MIS FUNCIONES
 

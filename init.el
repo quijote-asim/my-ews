@@ -1,5 +1,4 @@
 ;;; init.el --- Emacs Writing Studio init -*- lexical-binding: t; -*-
-
 ;; Copyright (C) 2024-2025 Peter Prevos
 
 ;; Author: Peter Prevos <peter@prevos.net>
@@ -392,9 +391,7 @@
   :config
   (elfeed-org)
   :custom
-  (rmh-elfeed-org-files
-   (list (concat (file-name-as-directory (getenv "HOME"))
-		 "org/bujo/elfeed.org"))))
+  (rmh-elfeed-org-files (list ql-elfeed-file)))
 
 ;; Easy insertion of weblinks
 
@@ -476,7 +473,7 @@
 
 ;; Denote
 
-(setq denote-directory "~/Notas")
+(setq denote-directory "~/org")
 
 ;; Consult convenience functions
 
