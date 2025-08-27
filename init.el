@@ -702,20 +702,12 @@
 
 (setq org-agenda-files (list ql-tasks-file))
 
-;; Ficheros para organizar
-
-(setq org-refile-targets
-      '((ql-tasks-file :maxlevel . 2)  ; agenda
-        (ql-collections-file :maxlevel . 3)  ; Colecciones
-        (ql-index-file :maxlevel . 2)  ; fichero de indice
-        (ql-archive-file :maxlevel . 3))) ; Archive
-
 ;; Mis etiquetas
 
 (setq org-tag-alist-for-agenda
       '(;; áreas
         ("@Hogar" . ?H)
-        ("@Sysadmin" . ?S)
+        ("@Personal" . ?P)
 	("@Ocio" . ?O)
 	("@Blog" . ?B)
       
@@ -723,13 +715,13 @@
         ("_Ordenador" . ?C)
         ("_Teléfono" . ?T)
 	("_Escritorio" . ?E)
-        ("_Calle" . ?R)
+        ("_Calle" . ?S)
 
         ;; Tipo/Estado
-        ("_Procesar" . ?D)
-        ("_Acción" . ?N)
-	("_Proyecto" . ?P)
-	("_Hábito" . ?h)
+        ("_Planifica" . ?P)
+        ("_Hacer" . ?W)
+	("_Hábito" . ?H)
+	("_Revisar" . ?R)
 
         ;; Actividaes
         ("@planificar" . ?p)
@@ -770,7 +762,7 @@
 ;; Bind org agenda command and custom agenda
 
 (setq org-agenda-custom-commands
-      '(("0" "Tareas por organizar" tags-todo "+_Procesar")
+      '(("0" "Tareas por organizar" tags-todo "+@procesar")
         ("t" agenda "Tareas de hoy"
                ((org-agenda-span 'day)
                 (org-agenda-entry-types '(:deadline :scheduled))
@@ -778,6 +770,10 @@
                 (org-agenda-overriding-header "Tareas para hoy")))
         ("p" "Lista de Proyectos" tags-todo "+_Proyecto")
         ("h" "Lista de Proyectos parados" todo "HOLD")))
+
+;; Refile en los ficheros de agenda hasta nivel 3
+(setq org-refile-targets
+      '((org-agenda-files :maxlevel . 3)))
 
 ;; FILE MANAGEMENT
 
