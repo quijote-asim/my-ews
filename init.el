@@ -433,9 +433,10 @@
    ("C-c l" . org-store-link))
   :custom
   (org-capture-templates
-   '(("t" "Tarea ✅" entry (file+headline ql-tasks-file "Tareas")
+   '(("t" "Tarea ✅" entry (file+headline ql-tasks-file "InBox 📥")
       "* Tarea: %?\n:PROPERTIES:\n:CREATED: %U\n:END:"
-     :empty-lines 1)
+      :empty-lines 1
+      :prepend t)
      )))
 
 ;; Denote
