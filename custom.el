@@ -13,4 +13,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "IosevkaTermSlab Nerd Font Propo" :foundry "UKWN" :slant normal :weight regular :height 138 :width normal)))))
+ '(default ((t (:family "FiraCode Nerd Font" :foundry "CTDB" :slant normal :weight medium :height 143 :width normal)))))

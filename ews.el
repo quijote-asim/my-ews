@@ -351,7 +351,8 @@ generate links in titlecase for attachments."
 ;; (defconst ql-journal-file     "~/org/20250426T191311==bujo--diario-personal.org"    "Archivo de notas diarias")
 (defconst ql-tasks-file       "~/org/20250426T191557==pkm--lista-de-tareas__list.org"   "Archivo de tareas")
 ;; (defconst ql-collections-file "~/org/20250430T125832--colecciones__bujo.org" "Archivo de tareas archivadas")
-(defconst ql-archive-file     "~/org/20250430T125950==bujo--archivador-de-mi-sistema.org" "Archivo de tareas archivadas")
+(defconst ql-colections-file     "~/org/20250903T113133==pkm--colecciones__list.org" "Archivo de colecciones del bujo")
+(defconst ql-archive-file     "~/org/20250905T194624==pkm--lista-de-logros__list.org" "Archivo de tareas terminadas")
 (defconst ql-elfeed-file     "~/org/20250221T153515==bujo--fuentes-rss__lista.org" "Archivo de fuentes rss")
 
 ;;; MIS FUNCIONES

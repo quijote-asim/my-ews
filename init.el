@@ -774,7 +774,7 @@
 
 ;; Refile en los ficheros de agenda hasta nivel 3
 (setq org-refile-targets
-      '((org-agenda-files :maxlevel . 3)))
+      '((org-agenda-files :maxlevel . 2)))
 
 ;; FILE MANAGEMENT
 
@@ -877,7 +877,7 @@
   :after org
   :commands (org-hugo-export-wim-to-md)
   :custom
-  (org-hugo-base-dir "~/Proyectos/Blog/my-blog/")  ;; ruta raíz de tu sitio Hugo
+  (org-hugo-base-dir "~/work/blog/my-blog/")  ;; ruta raíz de tu sitio Hugo
   (org-hugo-auto-export-on-save t))                ;; habilita auto-export al guardar
 
 ;; archivo a crear en  blog/.dir-locals.el
@@ -922,8 +922,8 @@
 (with-eval-after-load 'org-capture
   (add-to-list 'org-capture-templates
                '("d" "Nota al diario 📆"
-		 entry (file denote-journal-path-to-new-or-existing-entry)
-                 "* %U %?\n%i\n%a"
+		 plain (file+headline denote-journal-path-to-new-or-existing-entry "Notas del día")
+                 "%?\n%i\n%a"
                  :kill-buffer t
                  :empty-lines 1)))
 
