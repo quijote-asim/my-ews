@@ -80,6 +80,9 @@
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 
+;;; --- Fuente del sistema (GNOME / Sway) ---
+(setq font-use-system-font t)         ;; Emacs hereda la fuente definida por el sistema (fontconfig).
+
 ;; segui automáticamente los enlaces simbólicos
 ;; no pregunta cuando el archivo está bajo control de versiones
 
@@ -855,8 +858,8 @@
 (setq-default custom-file (expand-file-name
 			     "custom.el"
 			     user-emacs-directory))
-
-(load custom-file :no-error-if-file-is-missing)
+;; desactivo la carga de custom.el
+;; (load custom-file :no-error-if-file-is-missing)
 
 ;; ADVANCED UNDOCUMENTED EXPORT SETTINGS FOR EWS
 
