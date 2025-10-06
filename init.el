@@ -52,8 +52,12 @@
 
 ;; Load EWS functions
 
-(load-file (concat (file-name-as-directory user-emacs-directory)
-		   "ews.el"))
+;; (load-file (concat (file-name-as-directory user-emacs-directory) "ews.el"))
+
+;; Load EWS y  QL-EWS functions
+
+(load-file (expand-file-name "ews.el" user-emacs-directory))
+(load-file (expand-file-name "ql-ews.el" user-emacs-directory))
 
 ;; Check for missing external software
 
@@ -162,6 +166,9 @@
 ;; formato de fecha y semana comienza en lunes
 (setq calendar-date-style 'european
       calendar-week-start-day 1)
+
+;; Nombres de día/mes en español para timestamps
+(setq system-time-locale "es_ES.UTF-8")
 
 ;; Nombres de dias y meses en castellano
 (setq calendar-day-header-array ["Do" "Lu" "Ma" "Mi" "Ju" "Vi" "Sá"])
@@ -858,8 +865,7 @@
 (setq-default custom-file (expand-file-name
 			     "custom.el"
 			     user-emacs-directory))
-;; desactivo la carga de custom.el
-;; (load custom-file :no-error-if-file-is-missing)
+(load custom-file :no-error-if-file-is-missing)
 
 ;; ADVANCED UNDOCUMENTED EXPORT SETTINGS FOR EWS
 
@@ -900,7 +906,7 @@
 
 (add-hook 'after-save-hook 'ql/hugo-export-if-publicar)
 
-;; Incluye denote-jornal para gestionar el diario
+;; Incluye denote-journal para gestionar el diario
 
 (use-package denote-journal
   :ensure t
