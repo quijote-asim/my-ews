@@ -52,7 +52,7 @@
   :type 'list)
 
 ;; Definir múltiples diccionarios
-  (defcustom ews-hunspell-dictionaries '("es_ES" "en_US" "fr")
+  (defcustom ews-hunspell-dictionaries '("es_ES" "en_US" "fr_FR")
     "Lista de diccionarios de Hunspell a utilizar simultáneamente."
     :group 'ews
     :type '(repeat string))
