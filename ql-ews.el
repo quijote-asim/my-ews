@@ -17,36 +17,71 @@
 ;; Archivos clave
 ;; ==============================
 
-(defcustom ql-index-file "~/org/20250430T130243==bujo--índice-de-mi-bullet-journal-digital.org"
+(defcustom ql-denote-directory (expand-file-name "~/org")
+  "Directorio raíz donde vivirán las notas de Denote."
+  :type 'directory
+  :group 'ql)
+
+(defcustom ql-index-file "~/org/agenda/20251101T113643==mimoc--bujo-index.org"
   "Archivo índice del sistema."
   :type 'file
   :group 'ql)
 
-;; Archivo de diario (comentado en tu código, lo dejo opcional)
-;; (defcustom ql-journal-file \"~/org/20250426T191311==bujo--diario-personal.org\"
-;;   \"Archivo de notas diarias.\"
+(defcustom ql-bitacora-file "~/org/agenda/20251101T114427==mimoc--log-diario.org"
+  "Archivo para logs diarios"
+   :type 'file
+   :group 'ql)
+
+(defcustom ql-inbox-file "~/org/agenda/20251101T113906==mimoc--inbox-tareas.org"
+  "Archivo de capturas"
+  :type 'file
+  :group 'ql)
+
+(defcustom ql-tasks-file "~/org/agenda/20251101T114111==mimoc--acciones-siguientes.org"
+  "Archivo de tareas"
+  :type 'file
+  :group 'ql)
+
+(defcustom ql-collections-file "~/org/20251101T114319==mimoc--hábitos-y-objetivos.org"
+  "Archivo de hábitos y objetivos"
+  :type 'file
+  :group 'ql)
+
+(defcustom ql-collections-file "~/org/20251101T114211==mimoc--proyectos-activos.org"
+  "Archivo de Proyectos Activos"
+  :type 'file
+  :group 'ql)
+
+;; (defcustom ql-archive-file "~/org/20250905T194624==pkm--lista-de-logros__list.org"
+;;   "Archivo de tareas terminadas"
 ;;   :type 'file
 ;;   :group 'ql)
-
-(defcustom ql-tasks-file "~/org/20250426T191557==pkm--lista-de-tareas__list.org"
-  "Archivo de tareas."
-  :type 'file
-  :group 'ql)
-
-(defcustom ql-collections-file "~/org/20250903T113133==pkm--colecciones__list.org"
-  "Archivo de colecciones del bujo."
-  :type 'file
-  :group 'ql)
-
-(defcustom ql-archive-file "~/org/20250905T194624==pkm--lista-de-logros__list.org"
-  "Archivo de tareas terminadas."
-  :type 'file
-  :group 'ql)
 
 (defcustom ql-elfeed-file "~/org/20250221T153515==bujo--fuentes-rss__lista.org"
   "Archivo de fuentes RSS."
   :type 'file
   :group 'ql)
+
+;; -----------------------------------------------------------------------------
+;; Actualización automática de #+LASTMOD:
+;; -----------------------------------------------------------------------------
+
+(define-minor-mode ql/lastmod-auto-update-mode
+  "Actualiza #+LASTMOD: al guardar (solo en Org)."
+  :init-value nil
+  :lighter " LastMod"
+  (if ql/lastmod-auto-update-mode
+      (add-hook 'before-save-hook #'ql/--update-lastmod nil t)
+    (remove-hook 'before-save-hook #'ql/--update-lastmod t)))
+
+(defun ql/--update-lastmod ()
+  (when (eq major-mode 'org-mode)
+    (save-excursion
+      (goto-char (point-min))
+      (when (re-search-forward (ql/--rx-key "lastmod") nil t)
+        (replace-match (format "#+LASTMOD: %s"
+                               (format-time-string "%Y-%m-%d %H:%M"))
+                       t t)))))
 
 ;;; ============================================================================
 ;;;  Traducción inteligente en Emacs con translate-shell (+ Flyspell/Hunspell)
@@ -134,5 +169,7 @@ Con C-u: pregunta el idioma destino."
 ;; ==============================
 ;; Atajo de teclado
 ;; ==============================
+
 (global-set-key (kbd "C-c t") #'ql-translate-region)
 
+;;; ql-ews.el ends here

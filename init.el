@@ -449,28 +449,44 @@
       :prepend t)
      )))
 
-;; Denote
+;; --- Denote: configuración principal (init.el) ---
 
 (use-package denote
   :defer t
-  :custom
-  (denote-sort-keywords t)
-  (denote-link-description-function #'ews-denote-link-description-title-case)
+
+  ;; Necesitamos el autoload para poder enlazar ql/denote-new antes de cargar el módulo
+  :init
+   ;; Carpeta raíz de Denote (ajusta ql-denote-directory con las variables generalesa)
+  (setq denote-directory ql-denote-directory)
   (denote-rename-buffer-mode 1)
+  (autoload 'ql/denote-new "ql-ews" nil t)
+
+  :custom
+  ;; Tu configuración existente
+  (denote-sort-keywords nil)
+  (denote-link-description-function #'ews-denote-link-description-title-case)
+
+  ;; Prompts para que pida subcarpeta en cada nueva nota (sin silos)
+  (denote-prompts '(title subdirectory keywords))
+  (denote-allow-multi-word-keywords t)
+
   :hook
   (dired-mode . denote-dired-mode)
+
   :custom-face
   (denote-faces-link ((t (:slant italic))))
+
   :bind
   (("C-c w d b" . denote-find-backlink)
    ("C-c w d d" . denote-date)
    ("C-c w d l" . denote-find-link)
    ("C-c w d i" . denote-link-or-create)
    ("C-c w d k" . denote-rename-file-keywords)
-   ("C-c w d n" . denote)
+   ("C-c w d n" . denote-signature)
    ("C-c w d o" . denote-open-or-create)
    ("C-c w d r" . denote-rename-file)
    ("C-c w d R" . denote-rename-file-using-front-matter)))
+
 
 ;; Denote auxiliary packages
 
@@ -481,10 +497,6 @@
   (("C-c w d h" . denote-org-link-to-heading)))
 
 (use-package denote-sequence)
-
-;; Denote
-
-(setq denote-directory "~/org")
 
 ;; Consult convenience functions
 
@@ -635,9 +647,9 @@
 (use-package fountain-mode)
 (use-package markdown-mode)
 
-;; PUBLICATION
+;;; PUBLICATION
 
-;; Generic Org Export Settings
+;;; Generic Org Export Settings
 
 (use-package org
   :custom
