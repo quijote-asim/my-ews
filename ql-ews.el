@@ -27,7 +27,7 @@
   :type 'file
   :group 'ql)
 
-(defcustom ql-bitacora-file "~/org/agenda/20251101T114427==mimoc--log-diario.org"
+(defcustom ql-diary-file "~/org/agenda/20251101T114427==mimoc--log-diario.org"
   "Archivo para logs diarios"
    :type 'file
    :group 'ql)
@@ -42,20 +42,25 @@
   :type 'file
   :group 'ql)
 
-(defcustom ql-collections-file "~/org/20251101T114319==mimoc--hábitos-y-objetivos.org"
+(defcustom ql-goal-and-habits-file "~/org/20251101T114319==mimoc--hábitos-y-objetivos.org"
   "Archivo de hábitos y objetivos"
   :type 'file
   :group 'ql)
 
-(defcustom ql-collections-file "~/org/20251101T114211==mimoc--proyectos-activos.org"
+(defcustom ql-projects-file "~/org/20251101T114211==mimoc--resultados-esperados.org"
   "Archivo de Proyectos Activos"
   :type 'file
   :group 'ql)
 
-;; (defcustom ql-archive-file "~/org/20250905T194624==pkm--lista-de-logros__list.org"
-;;   "Archivo de tareas terminadas"
-;;   :type 'file
-;;   :group 'ql)
+(defcustom ql-to-reevaluate-file "~/org/20251101T113907==mimoc--temas-por-reevaluar.org"
+  "Archivo de Proyectos Activos"
+  :type 'file
+  :group 'ql)
+
+(defcustom ql-archive-file "~/org/20250905T194624==mimoc--temas-terminados.org"
+  "Archivo de tareas terminadas"
+  :type 'file
+  :group 'ql)
 
 (defcustom ql-elfeed-file "~/org/20250221T153515==bujo--fuentes-rss__lista.org"
   "Archivo de fuentes RSS."
@@ -66,11 +71,11 @@
 ;; Actualización automática de #+LASTMOD:
 ;; -----------------------------------------------------------------------------
 
-(define-minor-mode ql/lastmod-auto-update-mode
+(define-minor-mode ql-lastmod-auto-update-mode
   "Actualiza #+LASTMOD: al guardar (solo en Org)."
   :init-value nil
   :lighter " LastMod"
-  (if ql/lastmod-auto-update-mode
+  (if ql-lastmod-auto-update-mode
       (add-hook 'before-save-hook #'ql/--update-lastmod nil t)
     (remove-hook 'before-save-hook #'ql/--update-lastmod t)))
 
@@ -171,5 +176,134 @@ Con C-u: pregunta el idioma destino."
 ;; ==============================
 
 (global-set-key (kbd "C-c t") #'ql-translate-region)
+
+;;; FUNCIONES PARA MIMOC
+
+(defun mimoc-date-today-p (ts)
+  "TS es un time-stamp Org; true si es hoy."
+  (when ts
+    (let* ((d (calendar-gregorian-from-absolute (org-time-to-absolute ts)))
+           (td (calendar-current-date)))
+      (equal d td))))
+
+(defun mimoc-deadline-within-days-p (days)
+  "¿Deadline dentro de DAYS (incluyendo hoy)?"
+  (let ((dl (org-get-deadline-time (point))))
+    (when dl
+      (let* ((abs (org-time-to-absolute dl))
+             (today (org-today)))
+        (and (>= abs today) (<= abs (+ today days)))))))
+
+(defun mimoc-agenda-skip-inbox-if-not-soon ()
+  "Saltar elementos de la categoría InBox salvo si:
+   - SCHEDULED es hoy, o
+   - DEADLINE < 7 días."
+  (let ((cat (org-get-category)))
+    (when (string-match-p "\\`InBox\\'" cat)
+      (let ((sch (org-get-scheduled-time (point)))
+            (dl  (org-get-deadline-time (point))))
+        (unless (or (mimoc-date-today-p sch)
+                    (mimoc-deadline-within-days-p 7))
+          (or (outline-next-heading) (point-max)))))))
+
+;; Exportar objetivos a archivo temporal
+(defun mimoc-export-objetivos-to-temp ()
+  "Exporta todos los objetivos a archivo temporal para revisión."
+  (interactive)
+  (let ((temp-file (make-temp-file "objetivos-" nil ".org")))
+    (with-temp-file temp-file
+      (insert "#+title: Lista Completa de Objetivos\n")
+      (insert "#+date: " (format-time-string "[%Y-%m-%d %a]") "\n\n")
+      (org-map-entries
+       (lambda ()
+         (when (and (member (org-get-todo-state) '("TODO"))
+                    (string-match "Objetivo" (org-get-heading t t t t)))
+           (insert "* " (org-get-heading t t t t) "\n")
+           (insert ":PROPERTIES:\n")
+           (insert ":BLOQUE: " (or (org-entry-get nil "CATEGORY") "Sin categoría") "\n")
+           (insert ":END:\n\n")))
+       nil
+       (list ql-objectives-file)))
+    (find-file temp-file)
+    (message "Objetivos exportados a: %s" temp-file)))
+
+;; Exportar resultados a archivo temporal
+(defun mimoc-export-resultados-to-temp ()
+  "Exporta todos los resultados activos a archivo temporal."
+  (interactive)
+  (let ((temp-file (make-temp-file "resultados-" nil ".org")))
+    (with-temp-file temp-file
+      (insert "#+title: Lista Completa de Resultados Activos\n")
+      (insert "#+date: " (format-time-string "[%Y-%m-%d %a]") "\n\n")
+      (org-map-entries
+       (lambda ()
+         (when (and (member (org-get-todo-state) '("TODO" "HOLD"))
+                    (string-match "RESULTADO" (org-get-heading t t t t)))
+           (insert "* " (org-get-heading t t t t) "\n")
+           (let ((area (org-entry-get nil "AREA"))
+                 (refs (org-entry-get nil "REFERENCIAS")))
+             (insert ":PROPERTIES:\n")
+             (when area (insert ":AREA: " area "\n"))
+             (when refs (insert ":REFERENCIAS: " refs "\n"))
+             (insert ":END:\n\n"))))
+       nil
+       (list ql-projects-file)))
+    (find-file temp-file)
+    (message "Resultados exportados a: %s" temp-file)))
+
+;; Activar área inactiva
+(defun mimoc-activar-area-inactiva ()
+  "Mueve una subárea de 'Áreas Inactivas' a la sección activa del Bloque 4."
+  (interactive)
+  (let* ((areas-inactivas '("Paquetes y apps"
+                            "Comunicación y cuentas"
+                            "Finanzas personales"
+                            "Organización de archivos"
+                            "Fotografía"
+                            "Salud y bienestar"
+                            "Vida digital y seguridad"
+                            "Resultados y tareas (metodología)"
+                            "Ocio y comunidad"))
+         (area-elegida (completing-read "Área a activar: " areas-inactivas)))
+    (find-file ql-objectives-file)
+    (goto-char (point-min))
+    (if (re-search-forward (format "^\\*\\*\\* %s" (regexp-quote area-elegida)) nil t)
+        (progn
+          (org-cut-subtree)
+          (re-search-backward "^\\*\\* Áreas Inactivas")
+          (org-backward-heading-same-level 1)
+          (org-end-of-subtree)
+          (org-paste-subtree 2)
+          (message "Área '%s' activada. Añade objetivos/resultados ahora." area-elegida))
+      (message "Área no encontrada."))))
+
+(defun mimoc-crear-estructura-dia ()
+  "Crea estructura tripartita para el día actual en log-diario."
+  (interactive)
+  (find-file ql-diary-file)
+  (let* ((fecha-actual (calendar-current-date))
+         (fecha-string (format-time-string "%Y-%m-%d %A"))
+         (regexp-denote (format-time-string "%m%dT"))) ; MMDDT para denote-links
+    ;; Navegar o crear entrada datetree para hoy
+    (org-datetree-find-date-create fecha-actual)
+    (org-end-of-subtree t t)
+    ;; Verificar si ya existe la estructura
+    (unless (save-excursion
+              (org-back-to-heading t)
+              (re-search-forward "^\\*\\*\\*\\* Log del día 📋" 
+                                (save-excursion (org-end-of-subtree t t) (point))
+                                t))
+      ;; Crear los 3 headings
+      (insert "\n**** Log del día 📋\n\n")
+      (insert "**** Reflexiones 💭\n\n")
+      (insert (format "**** Emergencia del día 🔝\n\n#+BEGIN: denote-links :regexp \"%s\" :sort-by-component date :reverse-sort t :include-date t\n#+END:\n"
+                      regexp-denote))
+      (message "Estructura del día %s creada" fecha-string))))
+
+;; Atajos globales
+(global-set-key (kbd "C-c w d i") #'mimoc-crear-estructura-dia)
+(global-set-key (kbd "C-c w x o") #'mimoc-export-objetivos-to-temp)
+(global-set-key (kbd "C-c w x p") #'mimoc-export-resultados-to-temp)
+(global-set-key (kbd "C-c w a") #'mimoc-activar-area-inactiva)
 
 ;;; ql-ews.el ends here

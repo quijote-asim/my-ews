@@ -138,10 +138,16 @@
    ("C-c w t m" . modus-themes-select)
    ("C-c w t s" . consult-theme)))
 
-(use-package ef-themes)
+(use-package ef-themes
+  :config
+  ;; Opcional pero recomendado: que los comandos de Modus operen sobre ef-themes
+  (ef-themes-take-over-modus-themes-mode 1)
+
+  ;; Carga inicial del tema ef-*
+  (modus-themes-load-theme 'ef-dark))
 
 ;; like `load-theme' but also call `ef-themes-post-load-hook'
-(ef-themes-select 'ef-dark)
+;; (ef-themes-select 'ef-dark)
 
 ;; Mixed-pitch mode
 
@@ -271,9 +277,14 @@
   (("C-c w s s" . ispell)
    ("C-;"       . flyspell-auto-correct-previous-word)))
 
-;;; Ricing Org mode
+;;; CONFIGURACION DE ORG-MODE
+;; NOTA: Consolidación de múltiples bloques use-package en uno único
+;; FECHA: 2025-11-02
+;; RAZÓN: Eliminar redundancia y mejorar mantenibilidad
+;; CAMBIOS: Fusión sin modificación de funcionalidad
 
 (use-package org
+  ;; Apariencia y visualización
   :custom
   (org-startup-indented t)
   (org-hide-emphasis-markers t)
@@ -281,27 +292,48 @@
   (org-image-actual-width '(450))
   (org-pretty-entities t)
   (org-use-sub-superscripts "{}")
-  (org-id-link-to-org-use-id t)
-  (org-fold-catch-invisible-edits 'show) 
-;; Otros ajustes para org-mode
+  (org-fold-catch-invisible-edits 'show)
+  
+  ;; Gestión de tareas y logging
   (org-log-done 'note)
   (org-log-into-drawer t)
-  (org-reverse-note-order t))
+  (org-reverse-note-order t)
+  
+  ;; Enlaces y referencias
+  (org-id-link-to-org-use-id t)
+  
+  ;; Exportación
+  (org-export-with-drawers nil)
+  (org-export-with-todo-keywords nil)
+  (org-export-with-toc nil)
+  (org-export-with-smart-quotes t)
+  (org-export-date-timestamp-format "%e %B %Y")
+  
+  ;; Atajos de teclado globales
+  :bind
+  (("C-c c" . org-capture)
+   ("C-c l" . org-store-link))
+  
+  ;; Atajos específicos del modo Org
+  :bind
+  (:map org-mode-map
+        ("C-c w n" . ews-org-insert-notes-drawer)
+        ("C-c w p" . ews-org-insert-screenshot)
+        ("C-c w c" . ews-org-count-words)))
 
 ;; Configuración de mi flujo de trabajo
 ;; Configuración de TODO en org-mode
-(setq org-todo-keywords
-      '((sequence "Tarea:(t!)" "Acción:(a!)" "Esperando:(e@/!)" "Hito:(h!)" "Parado:(p@/!)" "|" "Hecho:(H@!)" "Cancelado:(c@/!)")))
 
-;; Colores para los estados de TODO
-(setq org-todo-keyword-faces
-      '(("Tarea" . (:foreground "magente" :weight bold))
-        ("Acción" . (:foreground "red" :weight bold))
-        ("Esperando" . (:foreground "gray" :weight bold))
-        ("Hito" . (:foreground "green" :weight bold))
-        ("Parado" . (:foreground "gray" :weight bold))
-        ("Hecho" . (:foreground "green" :weight bold))
-        ("Cancelado" . (:foreground "yellow" :weight bold))))
+;; --- Secuencia de TODOs coherente con tus estados ---
+(setq org-todo-keywords
+      '((sequence
+         "Resultado(r!)"    ; activos -> rojo
+         "Acción(a!)"       ; hacer -> amarillo fuerte
+         "Esperando(e@/!)"  ; en espera -> amarillo suave
+         "Parado(p@/!)"     ; pausado -> azul
+         "|"
+         "Hecho(h@!)"       ; hecho -> verde
+         "Cancelado(c@!)"))) ; cancelado -> gris
 
 ;; Show hidden emphasis markers
 
@@ -436,30 +468,14 @@
   :custom
   (openwith-associations nil))
 
-;; Fleeting notes
-(use-package org
-  :bind
-  (("C-c c" . org-capture)
-   ("C-c l" . org-store-link))
-  :custom
-  (org-capture-templates
-   '(("t" "Tarea ✅" entry (file+headline ql-tasks-file "InBox 📥")
-      "* Tarea: %?\n:PROPERTIES:\n:CREATED: %U\n:END:"
-      :empty-lines 1
-      :prepend t)
-     )))
-
 ;; --- Denote: configuración principal (init.el) ---
 
 (use-package denote
   :defer t
-
-  ;; Necesitamos el autoload para poder enlazar ql/denote-new antes de cargar el módulo
   :init
    ;; Carpeta raíz de Denote (ajusta ql-denote-directory con las variables generalesa)
   (setq denote-directory ql-denote-directory)
   (denote-rename-buffer-mode 1)
-  (autoload 'ql/denote-new "ql-ews" nil t)
 
   :custom
   ;; Tu configuración existente
@@ -489,8 +505,6 @@
 
 
 ;; Denote auxiliary packages
-
-(use-package denote-journal)
 
 (use-package denote-org
   :bind
@@ -559,15 +573,6 @@
    ("C-c w x n" . denote-explore-network)
    ("C-c w x v" . denote-explore-network-regenerate)
    ("C-c w x D" . denote-explore-barchart-degree)))
-
-;; Set some Org mode shortcuts
-
-(use-package org
-  :bind
-  (:map org-mode-map
-        ("C-c w n" . ews-org-insert-notes-drawer)
-        ("C-c w p" . ews-org-insert-screenshot)
-        ("C-c w c" . ews-org-count-words)))
 
 ;; Distraction-free writing
 
@@ -649,16 +654,6 @@
 
 ;;; PUBLICATION
 
-;;; Generic Org Export Settings
-
-(use-package org
-  :custom
-  (org-export-with-drawers nil)
-  (org-export-with-todo-keywords nil)
-  (org-export-with-toc nil)
-  (org-export-with-smart-quotes t)
-  (org-export-date-timestamp-format "%e %B %Y"))
-
 ;; epub export
 
 (use-package ox-epub
@@ -723,7 +718,53 @@
 
 ;; Mis ficheros de agenda
 
-(setq org-agenda-files (list ql-tasks-file))
+(setq org-agenda-files '("~/org/agenda/"))
+
+;; Define con que anticipación salen en agenda los deadlines
+
+(setq org-deadline-warning-days 7)
+
+;; Plantillas de capturas
+
+(setq org-capture-templates
+      `(
+        ;; 1) Tarea rápida -> InBox
+        ("t" "Tarea rápida al InBox" entry
+         (file+headline ,ql-inbox-file "InBox 📥")
+         "** Tarea: %?\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+         :empty-lines 1
+         :prepend t)
+
+        ;; 2) Acción siguiente
+        ("a" "Acción siguiente" entry
+         (file "~/org/agenda/mimoc--acciones-siguientes.org")
+         "*** Acción: %?\nSCHEDULED: %t\n:PROPERTIES:\n:AREA: :Bloque3:Profesional:\n:CREATED: %U\n:END:\n"
+         :empty-lines 1)
+
+        ;; 3) Resultado esperado
+        ("r" "Resultado esperado" entry
+         (file "~/org/agenda/mimoc--resultados-esperados.org")
+         "*** Resultado:(r!) %?\n:PROPERTIES:\n:AREA: :Bloque4:Sistemas:\n:REFERENCIAS:\n:CREATED: %U\n:END:\n** Acción: Siguiente Acción\n"
+         :empty-lines 1)
+
+        ;; 4) Diario: Log del día (datetree -> 'Log del día 📋')
+        ("dl" "Diario - Log" plain
+         (file+olp+datetree ,ql-diary-file "Log del día 📋")
+         (concat
+          "\n**** [%<%H:%M>] %?\n"
+          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+          "%(if (y-or-n-p \"¿Añadir enlace al punto actual? \") (concat \"Contexto: \" (or (org-capture-get :annotation) \"\") \"\\n\") \"\")\n")
+         :empty-lines 1)
+
+        ;; 5) Diario: Reflexión (datetree -> 'Reflexiones 💭')
+        ("dr" "Diario - Reflexión" plain
+         (file+olp+datetree ,ql-diary-file "Reflexiones 💭")
+         (concat
+          "\n**** [%<%H:%M>] %?\n"
+          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+          "%(if (y-or-n-p \"¿Añadir enlace al punto actual? \") (concat \"Contexto: \" (or (org-capture-get :annotation) \"\") \"\\n\") \"\")\n")
+         :empty-lines 1)
+        ))
 
 ;; Mis etiquetas
 
@@ -780,23 +821,85 @@
 (setq org-agenda-remove-tags t)
 
 ;; VISTAS PARA LA AGENDA
-;; Tareas capturadas por ubicar
+
+;; --- Caras ligadas a la paleta del tema ef en uso ---
+
+(defun ql-agenda-minimos--ef ()
+  "Mínimos visuales para la agenda usando la paleta ef-themes."
+  (ef-themes-with-colors
+    (custom-set-faces
+     `(org-agenda-structure ((t (:weight semibold :height 1.05))))
+     `(org-agenda-date-today ((t (:weight bold :underline t))))
+     `(org-agenda-done ((t (:foreground ,green))))
+     `(org-scheduled-previously ((t (:foreground ,red :weight bold))))
+     `(org-deadline-announce ((t (:foreground ,red))))
+     `(org-agenda-current-time ((t (:weight bold))))
+     `(org-agenda-time-grid ((t (:foreground ,fg-dim)))))))
+
+(add-hook 'ef-themes-post-load-hook #'ql/agenda-minimos--ef)
 
 ;; Bind org agenda command and custom agenda
 
 (setq org-agenda-custom-commands
-      '(("0" "Tareas por organizar" tags-todo "+@procesar")
-        ("t" agenda "Tareas de hoy"
-               ((org-agenda-span 'day)
-                (org-agenda-entry-types '(:deadline :scheduled))
-       ;;         (org-agenda-skip-function '(org-agenda-skip-deadline-if-shown))
-                (org-agenda-overriding-header "Tareas para hoy")))
-        ("p" "Lista de Proyectos" tags-todo "+_Proyecto")
-        ("h" "Lista de Proyectos parados" todo "HOLD")))
+      '(("0" "Tareas por organizar"
+         ((tags-todo "mimoc+inbox")))
+
+        ("t" "Tareas de hoy" agenda ""
+         ((org-agenda-span 'day)
+          (org-agenda-entry-types '(:deadline :scheduled))
+          (org-agenda-overriding-header "Tareas para hoy")
+          ;; Oculta DONE/HECHO + filtra InBox que no toca
+          (org-agenda-skip-function
+           (lambda ()
+             (or (org-agenda-skip-entry-if 'todo 'done)
+                 (mimoc-agenda-skip-inbox-if-not-soon))))
+          ;; Reduce repeticiones entre SCHEDULED y DEADLINE
+          (org-agenda-skip-scheduled-if-deadline-is-shown t)
+          (org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled)
+          ;; Presentación más limpia (solo “columna 3”: título)
+          (org-agenda-prefix-format '((agenda . "  ")))
+          (org-agenda-remove-tags t)
+          (org-agenda-use-time-grid nil)
+          (org-agenda-tags-column 0)))
+
+        ("p" "Resultados activos"
+         ((tags-todo "mimoc+resultado")))
+
+        ("h" "Resultados parados"
+         ((todo "HOLD")))
+
+        ("o" "Lista completa de objetivos"
+         ((tags-todo "LEVEL=2"
+                     ((org-agenda-overriding-header "Objetivos de Bloques Principales")
+                      (org-agenda-files '("~/org/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org"))))
+          (tags-todo "LEVEL=3&TODO=\"TODO\""
+                     ((org-agenda-overriding-header "Objetivos de Subáreas (Bloque 4)")
+                      (org-agenda-files '("~/org/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org"))))))
+
+        ("P" "Lista completa de resultados activos"
+         ((tags-todo "mimoc+resultado/TODO|HOLD"
+                     ((org-agenda-overriding-header "Resultados en Curso")
+                      (org-agenda-sorting-strategy '(category-keep))))))
+
+        ("i" "Revisión de áreas inactivas"
+         ((tags "LEVEL=3&CATEGORY=\"Sistemas\""
+                ((org-agenda-overriding-header "Áreas del Bloque 4 (Sistemas)")
+                 (org-agenda-files '("~/org/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org"))
+                 (org-agenda-prefix-format "  %-20b ")
+                 (org-agenda-sorting-strategy '(category-keep))))))
+
+        ("e" "Equilibrio entre bloques principales"
+         ((tags "LEVEL=1"
+                ((org-agenda-overriding-header "Contadores de Bloques Principales")
+                 (org-agenda-files '("~/org/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org"))
+                 (org-agenda-prefix-format "  ")))))))
 
 ;; Refile en los ficheros de agenda hasta nivel 3
+
 (setq org-refile-targets
-      '((org-agenda-files :maxlevel . 2)))
+      '(("~/org/agenda/20251101T114111==mimoc--acciones-siguientes.org" :maxlevel . 2)
+        ("~/org/agenda/20251101T114211==mimoc--resultados-esperados.org" :maxlevel . 2)
+        ("~/org/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org" :maxlevel . 2)))
 
 ;; FILE MANAGEMENT
 
@@ -910,43 +1013,13 @@
 (setq org-hugo-auto-export-directory "~/Proyectos/Blog/my-blog/content/blog/")
 (setq org-hugo-auto-export-pages-directory "~/Proyectos/Blog/my-blog/content/pages/")
 
-(defun ql/hugo-export-if-publicar ()
+(defun ql-hugo-export-if-publicar ()
   "Exportar solo archivos que contengan '__publicar.org' en el nombre."
   (when (and (string= (file-name-extension (buffer-file-name)) "org")
              (string-match "__publicar\\.org$" (file-name-nondirectory (buffer-file-name))))
     (org-hugo-auto-export-to-md)))
 
-(add-hook 'after-save-hook 'ql/hugo-export-if-publicar)
-
-;; Incluye denote-journal para gestionar el diario
-
-(use-package denote-journal
-  :ensure t
-  ;; Bind those to some key for your convenience.
-  :bind (("C-c w j n". denote-journal-new-entry)
-	 ("C-c w j u".  denote-journal-new-or-existing-entry)
-	 ("C-c w j l".  denote-journal-link-or-create-entry ))
-  :hook (calendar-mode . denote-journal-calendar-mode)
-  :config
-  ;; Use the "diario" subdirectory of the `denote-directory'.  Set this
-  ;; to nil to use the `denote-directory' instead.
-  (setq denote-journal-directory
-        (expand-file-name "diario" denote-directory))
-  ;; Default keyword for new journal entries. It can also be a list of
-  ;; strings.
-  (setq denote-journal-keyword "dia")
-  ;; Read the doc string of `denote-journal-title-format'.
-  (setq denote-journal-title-format 'day-date-month-year))
-
-;; Capturas al diario
-
-(with-eval-after-load 'org-capture
-  (add-to-list 'org-capture-templates
-               '("d" "Nota al diario 📆"
-		 plain (file+headline denote-journal-path-to-new-or-existing-entry "Notas del día")
-                 "%?\n%i\n%a"
-                 :kill-buffer t
-                 :empty-lines 1)))
+(add-hook 'after-save-hook 'ql-hugo-export-if-publicar)
 
 ;;; ql-org-headers.el ends here
 
