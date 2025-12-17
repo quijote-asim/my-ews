@@ -718,7 +718,7 @@
 
 ;; Mis ficheros de agenda
 
-(setq org-agenda-files '("~/org/agenda/"))
+(setq org-agenda-files '("~/notes/agenda/"))
 
 ;; Define con que anticipación salen en agenda los deadlines
 
@@ -737,13 +737,13 @@
 
         ;; 2) Acción siguiente
         ("a" "Acción siguiente" entry
-         (file "~/org/agenda/mimoc--acciones-siguientes.org")
+         (file "~/notes/agenda/mimoc--acciones-siguientes.org")
          "*** Acción: %?\nSCHEDULED: %t\n:PROPERTIES:\n:AREA: :Bloque3:Profesional:\n:CREATED: %U\n:END:\n"
          :empty-lines 1)
 
         ;; 3) Resultado esperado
         ("r" "Resultado esperado" entry
-         (file "~/org/agenda/mimoc--resultados-esperados.org")
+         (file "~/notes/agenda/mimoc--resultados-esperados.org")
          "*** Resultado:(r!) %?\n:PROPERTIES:\n:AREA: :Bloque4:Sistemas:\n:REFERENCIAS:\n:CREATED: %U\n:END:\n** Acción: Siguiente Acción\n"
          :empty-lines 1)
 
@@ -871,10 +871,10 @@
         ("o" "Lista completa de objetivos"
          ((tags-todo "LEVEL=2"
                      ((org-agenda-overriding-header "Objetivos de Bloques Principales")
-                      (org-agenda-files '("~/org/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org"))))
+                      (org-agenda-files '("~/notes/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org"))))
           (tags-todo "LEVEL=3&TODO=\"TODO\""
                      ((org-agenda-overriding-header "Objetivos de Subáreas (Bloque 4)")
-                      (org-agenda-files '("~/org/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org"))))))
+                      (org-agenda-files '("~/notes/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org"))))))
 
         ("P" "Lista completa de resultados activos"
          ((tags-todo "mimoc+resultado/TODO|HOLD"
@@ -884,22 +884,22 @@
         ("i" "Revisión de áreas inactivas"
          ((tags "LEVEL=3&CATEGORY=\"Sistemas\""
                 ((org-agenda-overriding-header "Áreas del Bloque 4 (Sistemas)")
-                 (org-agenda-files '("~/org/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org"))
+                 (org-agenda-files '("~/notes/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org"))
                  (org-agenda-prefix-format "  %-20b ")
                  (org-agenda-sorting-strategy '(category-keep))))))
 
         ("e" "Equilibrio entre bloques principales"
          ((tags "LEVEL=1"
                 ((org-agenda-overriding-header "Contadores de Bloques Principales")
-                 (org-agenda-files '("~/org/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org"))
+                 (org-agenda-files '("~/notes/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org"))
                  (org-agenda-prefix-format "  ")))))))
 
 ;; Refile en los ficheros de agenda hasta nivel 3
 
 (setq org-refile-targets
-      '(("~/org/agenda/20251101T114111==mimoc--acciones-siguientes.org" :maxlevel . 2)
-        ("~/org/agenda/20251101T114211==mimoc--resultados-esperados.org" :maxlevel . 2)
-        ("~/org/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org" :maxlevel . 2)))
+      '(("~/notes/agenda/20251101T114111==mimoc--acciones-siguientes.org" :maxlevel . 2)
+        ("~/notes/agenda/20251101T114211==mimoc--resultados-esperados.org" :maxlevel . 2)
+        ("~/notes/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org" :maxlevel . 2)))
 
 ;; FILE MANAGEMENT
 
@@ -1006,12 +1006,12 @@
 
 ;; archivo a crear en  blog/.dir-locals.el
 ;; Con el se convierten automaticamente los archivos que se inserten
-;; ~/org/denote/.dir-locals.el
+;; ~/notes/denote/.dir-locals.el
 ;; ((org-mode . ((eval . (org-hugo-auto-export-mode)))))
 
 ;; Establecer las carpetas de exportación
-(setq org-hugo-auto-export-directory "~/Proyectos/Blog/my-blog/content/blog/")
-(setq org-hugo-auto-export-pages-directory "~/Proyectos/Blog/my-blog/content/pages/")
+(setq org-hugo-auto-export-directory "~/work/blog/my-blog/content/blog/")
+(setq org-hugo-auto-export-pages-directory "~/work/blog/my-blog/content/pages/")
 
 (defun ql-hugo-export-if-publicar ()
   "Exportar solo archivos que contengan '__publicar.org' en el nombre."

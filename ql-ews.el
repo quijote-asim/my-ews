@@ -17,52 +17,52 @@
 ;; Archivos clave
 ;; ==============================
 
-(defcustom ql-denote-directory (expand-file-name "~/org")
+(defcustom ql-denote-directory (expand-file-name "~/notes")
   "Directorio raíz donde vivirán las notas de Denote."
   :type 'directory
   :group 'ql)
 
-(defcustom ql-index-file "~/org/agenda/20251101T113643==mimoc--bujo-index.org"
+(defcustom ql-index-file "~/notes/agenda/20251101T113643==mimoc--bujo-index.org"
   "Archivo índice del sistema."
   :type 'file
   :group 'ql)
 
-(defcustom ql-diary-file "~/org/agenda/20251101T114427==mimoc--log-diario.org"
+(defcustom ql-diary-file "~/notes/agenda/20251101T114427==mimoc--log-diario.org"
   "Archivo para logs diarios"
    :type 'file
    :group 'ql)
 
-(defcustom ql-inbox-file "~/org/agenda/20251101T113906==mimoc--inbox-tareas.org"
+(defcustom ql-inbox-file "~/notes/agenda/20251101T113906==mimoc--inbox-tareas.org"
   "Archivo de capturas"
   :type 'file
   :group 'ql)
 
-(defcustom ql-tasks-file "~/org/agenda/20251101T114111==mimoc--acciones-siguientes.org"
+(defcustom ql-tasks-file "~/notes/agenda/20251101T114111==mimoc--acciones-siguientes.org"
   "Archivo de tareas"
   :type 'file
   :group 'ql)
 
-(defcustom ql-goal-and-habits-file "~/org/20251101T114319==mimoc--hábitos-y-objetivos.org"
+(defcustom ql-goal-and-habits-file "~/notes/20251101T114319==mimoc--hábitos-y-objetivos.org"
   "Archivo de hábitos y objetivos"
   :type 'file
   :group 'ql)
 
-(defcustom ql-projects-file "~/org/20251101T114211==mimoc--resultados-esperados.org"
+(defcustom ql-projects-file "~/notes/20251101T114211==mimoc--resultados-esperados.org"
   "Archivo de Proyectos Activos"
   :type 'file
   :group 'ql)
 
-(defcustom ql-to-reevaluate-file "~/org/20251101T113907==mimoc--temas-por-reevaluar.org"
+(defcustom ql-to-reevaluate-file "~/notes/20251101T113907==mimoc--temas-por-reevaluar.org"
   "Archivo de Proyectos Activos"
   :type 'file
   :group 'ql)
 
-(defcustom ql-archive-file "~/org/20250905T194624==mimoc--temas-terminados.org"
+(defcustom ql-archive-file "~/notes/20250905T194624==mimoc--temas-terminados.org"
   "Archivo de tareas terminadas"
   :type 'file
   :group 'ql)
 
-(defcustom ql-elfeed-file "~/org/20250221T153515==bujo--fuentes-rss__lista.org"
+(defcustom ql-elfeed-file "~/notes/20250221T153515==bujo--fuentes-rss__lista.org"
   "Archivo de fuentes RSS."
   :type 'file
   :group 'ql)
