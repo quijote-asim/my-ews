@@ -747,21 +747,21 @@
          :empty-lines 1)
 
         ;; 4) Diario: Log del día (datetree -> 'Nota 📋')
-        ("nl" "Nota 📋" plain
+        ("n" "Nota 📋" plain
          (file+datetree ,ql-diary-file)
-         "* 📋 [%<%H:%M>] %?"
+         "**** 📋 [%<%Y-%m-%d %H:%M>] %?"
          :empty-lines 1)
        
 	;; 5) Diario: Reflexión (datetree -> 'Reflexion 💭')
         ("r" "Reflexion 💭" plain
-         (file+datetree ,ql-diary-file)
-         "* 💭 [%<%H:%M>] %?"
+         (file+datetree ,ql-diary-file) 
+         "**** 💭 [%<%Y-%m-%d %H:%M>] %?"
          :empty-lines 1)
 
 	;; 6) Diario: Idea (datetree -> 'Idea 💡')
         ("i" "Idea 💡" plain
          (file+datetree ,ql-diary-file)
-         "* 💭 [%<%H:%M>] %?"
+         "**** 💭 [%<%Y-%m-%d %H:%M>] %?"
          :empty-lines 1)
 
         ))
