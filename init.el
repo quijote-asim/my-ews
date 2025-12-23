@@ -503,7 +503,6 @@
    ("C-c w d r" . denote-rename-file)
    ("C-c w d R" . denote-rename-file-using-front-matter)))
 
-
 ;; Denote auxiliary packages
 
 (use-package denote-org
@@ -729,41 +728,42 @@
 (setq org-capture-templates
       `(
         ;; 1) Tarea rápida -> InBox
-        ("t" "Tarea rápida al InBox" entry
+        ("t" "Tarea rápida al InBox ☑️" entry
          (file+headline ,ql-inbox-file "InBox 📥")
          "** Tarea: %?\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
          :empty-lines 1
          :prepend t)
 
         ;; 2) Acción siguiente
-        ("a" "Acción siguiente" entry
+        ("a" "Acción siguiente ⏭️" entry
          (file "~/notes/agenda/mimoc--acciones-siguientes.org")
          "*** Acción: %?\nSCHEDULED: %t\n:PROPERTIES:\n:AREA: :Bloque3:Profesional:\n:CREATED: %U\n:END:\n"
          :empty-lines 1)
 
         ;; 3) Resultado esperado
-        ("r" "Resultado esperado" entry
+        ("p" "Resultado esperado 🏁" entry
          (file "~/notes/agenda/mimoc--resultados-esperados.org")
          "*** Resultado:(r!) %?\n:PROPERTIES:\n:AREA: :Bloque4:Sistemas:\n:REFERENCIAS:\n:CREATED: %U\n:END:\n** Acción: Siguiente Acción\n"
          :empty-lines 1)
 
-        ;; 4) Diario: Log del día (datetree -> 'Log del día 📋')
-        ("dl" "Diario - Log" plain
-         (file+olp+datetree ,ql-diary-file "Log del día 📋")
-         (concat
-          "\n**** [%<%H:%M>] %?\n"
-          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-          "%(if (y-or-n-p \"¿Añadir enlace al punto actual? \") (concat \"Contexto: \" (or (org-capture-get :annotation) \"\") \"\\n\") \"\")\n")
+        ;; 4) Diario: Log del día (datetree -> 'Nota 📋')
+        ("nl" "Nota 📋" plain
+         (file+datetree ,ql-diary-file)
+         "* 📋 [%<%H:%M>] %?"
+         :empty-lines 1)
+       
+	;; 5) Diario: Reflexión (datetree -> 'Reflexion 💭')
+        ("r" "Reflexion 💭" plain
+         (file+datetree ,ql-diary-file)
+         "* 💭 [%<%H:%M>] %?"
          :empty-lines 1)
 
-        ;; 5) Diario: Reflexión (datetree -> 'Reflexiones 💭')
-        ("dr" "Diario - Reflexión" plain
-         (file+olp+datetree ,ql-diary-file "Reflexiones 💭")
-         (concat
-          "\n**** [%<%H:%M>] %?\n"
-          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-          "%(if (y-or-n-p \"¿Añadir enlace al punto actual? \") (concat \"Contexto: \" (or (org-capture-get :annotation) \"\") \"\\n\") \"\")\n")
+	;; 6) Diario: Idea (datetree -> 'Idea 💡')
+        ("i" "Idea 💡" plain
+         (file+datetree ,ql-diary-file)
+         "* 💭 [%<%H:%M>] %?"
          :empty-lines 1)
+
         ))
 
 ;; Mis etiquetas
@@ -836,7 +836,7 @@
      `(org-agenda-current-time ((t (:weight bold))))
      `(org-agenda-time-grid ((t (:foreground ,fg-dim)))))))
 
-(add-hook 'ef-themes-post-load-hook #'ql/agenda-minimos--ef)
+(add-hook 'ef-themes-post-load-hook #'ql-agenda-minimos--ef)
 
 ;; Bind org agenda command and custom agenda
 

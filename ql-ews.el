@@ -277,31 +277,7 @@ Con C-u: pregunta el idioma destino."
           (message "Área '%s' activada. Añade objetivos/resultados ahora." area-elegida))
       (message "Área no encontrada."))))
 
-(defun mimoc-crear-estructura-dia ()
-  "Crea estructura tripartita para el día actual en log-diario."
-  (interactive)
-  (find-file ql-diary-file)
-  (let* ((fecha-actual (calendar-current-date))
-         (fecha-string (format-time-string "%Y-%m-%d %A"))
-         (regexp-denote (format-time-string "%m%dT"))) ; MMDDT para denote-links
-    ;; Navegar o crear entrada datetree para hoy
-    (org-datetree-find-date-create fecha-actual)
-    (org-end-of-subtree t t)
-    ;; Verificar si ya existe la estructura
-    (unless (save-excursion
-              (org-back-to-heading t)
-              (re-search-forward "^\\*\\*\\*\\* Log del día 📋" 
-                                (save-excursion (org-end-of-subtree t t) (point))
-                                t))
-      ;; Crear los 3 headings
-      (insert "\n**** Log del día 📋\n\n")
-      (insert "**** Reflexiones 💭\n\n")
-      (insert (format "**** Emergencia del día 🔝\n\n#+BEGIN: denote-links :regexp \"%s\" :sort-by-component date :reverse-sort t :include-date t\n#+END:\n"
-                      regexp-denote))
-      (message "Estructura del día %s creada" fecha-string))))
-
 ;; Atajos globales
-(global-set-key (kbd "C-c w d i") #'mimoc-crear-estructura-dia)
 (global-set-key (kbd "C-c w x o") #'mimoc-export-objetivos-to-temp)
 (global-set-key (kbd "C-c w x p") #'mimoc-export-resultados-to-temp)
 (global-set-key (kbd "C-c w a") #'mimoc-activar-area-inactiva)
