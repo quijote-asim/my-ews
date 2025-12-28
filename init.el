@@ -79,13 +79,18 @@
 
 ;;; LOOK AND FEEL
 
+
 (setq inhibit-splash-screen t)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 
-;;; --- Fuente del sistema (GNOME / Sway) ---
-(setq font-use-system-font t)         ;; Emacs hereda la fuente definida por el sistema (fontconfig).
+;;; --- Fuente
+(set-face-attribute
+ 'default nil
+ :family "Aporetic Sans Mono"
+ :height 143
+ :weight 'regular)
 
 ;; segui automáticamente los enlaces simbólicos
 ;; no pregunta cuando el archivo está bajo control de versiones
@@ -480,7 +485,9 @@
   :custom
   ;; Tu configuración existente
   (denote-sort-keywords nil)
-  (denote-link-description-function #'ews-denote-link-description-title-case)
+  (with-eval-after-load 'denote
+  (setq denote-link-description-format
+        #'ews-denote-link-description-title-case))
 
   ;; Prompts para que pida subcarpeta en cada nueva nota (sin silos)
   (denote-prompts '(title subdirectory keywords))
@@ -749,18 +756,24 @@
         ;; 4) Diario: Log del día (datetree -> 'Nota 📋')
         ("n" "Nota 📋" plain
          (file+datetree ,ql-diary-file)
-         "**** 📋 [%<%Y-%m-%d %H:%M>] %?"
+         "**** [Nnota] 📋 [%<%Y-%m-%d %H:%M>] %?"
          :empty-lines 1)
        
-	;; 5) Diario: Reflexión (datetree -> 'Reflexion 💭')
-        ("r" "Reflexion 💭" plain
-         (file+datetree ,ql-diary-file) 
-         "**** 💭 [%<%Y-%m-%d %H:%M>] %?"
-         :empty-lines 1)
-
-	;; 6) Diario: Idea (datetree -> 'Idea 💡')
+	;; 5) Diario: Idea (datetree -> 'Idea 💡')
         ("i" "Idea 💡" plain
          (file+datetree ,ql-diary-file)
+         "**** [Idea] 💡 [%<%Y-%m-%d %H:%M>] %?"
+         :empty-lines 1)
+
+	;; 6) Diario: Idea (datetree -> 'IError/Incidencia ⚠️')
+        ("e" "Error/Incidencia ⚠️" plain
+         (file+datetree ,ql-diary-file)
+         "**** [Incidencia] ⚠️ [%<%Y-%m-%d %H:%M>] %?"
+         :empty-lines 1)
+
+	;; 7) Diario: Reflexión (datetree -> 'Reflexion 💭')
+        ("r" "Reflexion 💭" plain
+         (file+datetree ,ql-diary-file) 
          "**** 💭 [%<%Y-%m-%d %H:%M>] %?"
          :empty-lines 1)
 
