@@ -754,29 +754,26 @@
          :empty-lines 1)
 
         ;; 4) Diario: Log del día (datetree -> 'Nota 📋')
-        ("n" "Nota 📋" plain
-         (file+datetree ,ql-diary-file)
-         "**** [Nnota] 📋 [%<%Y-%m-%d %H:%M>] %?"
-         :empty-lines 1)
+	;; Diario: Nota 📋
+	("n" "Nota 📋" plain (file+datetree ,ql-diary-file)
+	 "**** %^{Título}\n:PROPERTIES:\n:tipo: [Nota 📋]\n:relacion: %^{Proyecto (opcional)}\n:END:\n\n- *Contexto*:  %?\n- *Decisión*:\n- *Resultado*: "
+	 :empty-lines 1)
        
 	;; 5) Diario: Idea (datetree -> 'Idea 💡')
-        ("i" "Idea 💡" plain
-         (file+datetree ,ql-diary-file)
-         "**** [Idea] 💡 [%<%Y-%m-%d %H:%M>] %?"
+	("i" "Idea 💡" plain  (file+datetree ,ql-diary-file)
+             "**** %^{Idea}\n:PROPERTIES:\n:tipo: [Idea 💡]:END:\n\n- *Descripción*:  %?\n- *Motivo*: "
          :empty-lines 1)
 
-	;; 6) Diario: Idea (datetree -> 'IError/Incidencia ⚠️')
-        ("e" "Error/Incidencia ⚠️" plain
-         (file+datetree ,ql-diary-file)
-         "**** [Incidencia] ⚠️ [%<%Y-%m-%d %H:%M>] %?"
-         :empty-lines 1)
-
+	;; 6) Diario: Bug (datetree -> 'Bug ⚠️')
+        ("e" "Bug ⚠️" plain (file+datetree ,ql-diary-file)
+             "**** %^{Incidencia}\n:PROPERTIES:\n:tipo: [Bug ⚠️]\n:relacion: %^{Proyecto (opcional)}\n:END:\n\n- *Qué falló*:  %?\n- *Sintómas*:\n- *Decisión*:\n- *Resultado*: "
+             :empty-lines 1)
+	
 	;; 7) Diario: Reflexión (datetree -> 'Reflexion 💭')
-        ("r" "Reflexion 💭" plain
-         (file+datetree ,ql-diary-file) 
-         "**** 💭 [%<%Y-%m-%d %H:%M>] %?"
-         :empty-lines 1)
-
+        ("r" "Reflexión 💭" plain (file+datetree ,ql-diary-file)
+             "**** %^{Tema de la reflexión}\n:PROPERTIES:\n:tipo: [Reflexión 💭]\n:END:\n\n%?\n- *Relevancia*:\n- *Impacto esperado: "
+             :empty-lines 1)
+	
         ))
 
 ;; Mis etiquetas

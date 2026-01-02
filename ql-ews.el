@@ -27,7 +27,7 @@
   :type 'file
   :group 'ql)
 
-(defcustom ql-diary-file "~/notes/agenda/20251101T114427==mimoc--log-diario.org"
+(defcustom ql-diary-file "~/notes/agenda/20260101T000001==1sop--2026-cuaderno-de-notas__diario.org"
   "Archivo para logs diarios"
    :type 'file
    :group 'ql)
