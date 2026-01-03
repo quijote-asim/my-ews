@@ -505,7 +505,7 @@
    ("C-c w d l" . denote-find-link)
    ("C-c w d i" . denote-link-or-create)
    ("C-c w d k" . denote-rename-file-keywords)
-   ("C-c w d n" . denote-signature)
+   ("C-c w d n" . denote)
    ("C-c w d o" . denote-open-or-create)
    ("C-c w d r" . denote-rename-file)
    ("C-c w d R" . denote-rename-file-using-front-matter)))
@@ -516,7 +516,7 @@
   :bind
   (("C-c w d h" . denote-org-link-to-heading)))
 
-(use-package denote-sequence)
+;; (use-package denote-sequence)
 
 ;; Consult convenience functions
 
