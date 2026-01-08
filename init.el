@@ -724,7 +724,16 @@
 
 ;; Mis ficheros de agenda
 
-(setq org-agenda-files '("~/notes/agenda/"))
+(setq org-agenda-files (list ql-tasks-file))
+
+;; Refile en los ficheros de agenda hasta nivel 3
+
+(setq org-refile-targets
+      `((,ql-tasks-file            :maxlevel . 2)
+        (,ql-goal-and-habits-file  :maxlevel . 2)
+        (,ql-projects-file         :maxlevel . 2)
+        (,ql-to-reevaluate-file    :maxlevel . 2)
+        (,ql-archive-file          :maxlevel . 2)))
 
 ;; Define con que anticipación salen en agenda los deadlines
 
@@ -900,13 +909,6 @@
                 ((org-agenda-overriding-header "Contadores de Bloques Principales")
                  (org-agenda-files '("~/notes/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org"))
                  (org-agenda-prefix-format "  ")))))))
-
-;; Refile en los ficheros de agenda hasta nivel 3
-
-(setq org-refile-targets
-      '(("~/notes/agenda/20251101T114111==mimoc--acciones-siguientes.org" :maxlevel . 2)
-        ("~/notes/agenda/20251101T114211==mimoc--resultados-esperados.org" :maxlevel . 2)
-        ("~/notes/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org" :maxlevel . 2)))
 
 ;; FILE MANAGEMENT
 
