@@ -32,11 +32,6 @@
    :type 'file
    :group 'ql)
 
-(defcustom ql-inbox-file "~/notes/agenda/20251101T113906==mimoc--inbox-tareas.org"
-  "Archivo de capturas"
-  :type 'file
-  :group 'ql)
-
 (defcustom ql-tasks-file "~/notes/agenda/20251101T114111==mimoc--acciones-siguientes.org"
   "Archivo de tareas"
   :type 'file

@@ -735,43 +735,40 @@
 (setq org-capture-templates
       `(
         ;; 1) Tarea rápida -> InBox
-        ("t" "Tarea rápida al InBox ☑️" entry
-         (file+headline ,ql-inbox-file "InBox 📥")
-         "** Tarea: %?\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+        ("t" "Tarea rápida al InBox ☑️" entry (file+headline ,ql-tasks-file "InBox 📥")
+         "** Tarea: %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
          :empty-lines 1
          :prepend t)
 
         ;; 2) Acción siguiente
-        ("a" "Acción siguiente ⏭️" entry
-         (file "~/notes/agenda/mimoc--acciones-siguientes.org")
+        ("a" "Acción siguiente ⏭️" entry (file "~/notes/agenda/mimoc--acciones-siguientes.org")
          "*** Acción: %?\nSCHEDULED: %t\n:PROPERTIES:\n:AREA: :Bloque3:Profesional:\n:CREATED: %U\n:END:\n"
          :empty-lines 1)
 
         ;; 3) Resultado esperado
-        ("p" "Resultado esperado 🏁" entry
-         (file "~/notes/agenda/mimoc--resultados-esperados.org")
-         "*** Resultado:(r!) %?\n:PROPERTIES:\n:AREA: :Bloque4:Sistemas:\n:REFERENCIAS:\n:CREATED: %U\n:END:\n** Acción: Siguiente Acción\n"
+        ("p" "Resultado esperado 🏁" entry (file "~/notes/agenda/mimoc--resultados-esperados.org")
+         "*** Resultado:(r!) %?\n:PROPERTIES:\n:CREATED: %U\n:AREA: :Bloque4:Sistemas:\n:REFERENCIAS:\n:END:\n** Acción: Siguiente Acción\n"
          :empty-lines 1)
 
         ;; 4) Diario: Log del día (datetree -> 'Nota 📋')
 	;; Diario: Nota 📋
 	("n" "Nota 📋" plain (file+datetree ,ql-diary-file)
-	 "**** %^{Título}\n:PROPERTIES:\n:tipo: [Nota 📋]\n:relacion: %^{Proyecto (opcional)}\n:END:\n\n- *Contexto*:  %?\n- *Decisión*:\n- *Resultado*: "
+	 "**** %^{Título}\n:PROPERTIES:\n:CREATED: %U\n:tipo: [Nota 📋]\n:relacion: %^{Proyecto (opcional)}\n:END:\n\n- *Contexto*:  %?\n- *Decisión*:\n- *Resultado*: "
 	 :empty-lines 1)
        
 	;; 5) Diario: Idea (datetree -> 'Idea 💡')
 	("i" "Idea 💡" plain  (file+datetree ,ql-diary-file)
-             "**** %^{Idea}\n:PROPERTIES:\n:tipo: [Idea 💡]:END:\n\n- *Descripción*:  %?\n- *Motivo*: "
+             "**** %^{Idea}\n:PROPERTIES:\n:CREATED: %U\n:tipo: [Idea 💡]:END:\n\n- *Descripción*:  %?\n- *Motivo*: "
          :empty-lines 1)
 
 	;; 6) Diario: Bug (datetree -> 'Bug ⚠️')
-        ("e" "Bug ⚠️" plain (file+datetree ,ql-diary-file)
-             "**** %^{Incidencia}\n:PROPERTIES:\n:tipo: [Bug ⚠️]\n:relacion: %^{Proyecto (opcional)}\n:END:\n\n- *Qué falló*:  %?\n- *Sintómas*:\n- *Decisión*:\n- *Resultado*: "
+        ("e" "Bug ⚠️" entry (file+headline ,ql-tasks-file "InBox 📥")
+             "**** Tarea: %^{Incidencia}\n:PROPERTIES:\n:CREATED: %U\n:tipo: [Bug ⚠️]\n:Proyecto: %^{Proyecto (opcional)}\n:END:\n\n- *Qué falló*:  %?\n- *Sintomas*:\n- *Decisión*:\n- *Resultado*: "
              :empty-lines 1)
 	
 	;; 7) Diario: Reflexión (datetree -> 'Reflexion 💭')
         ("r" "Reflexión 💭" plain (file+datetree ,ql-diary-file)
-             "**** %^{Tema de la reflexión}\n:PROPERTIES:\n:tipo: [Reflexión 💭]\n:END:\n\n%?\n- *Relevancia*:\n- *Impacto esperado: "
+             "**** %^{Tema de la reflexión}\n:PROPERTIES:\n:CREATED: %U\n:tipo: [Reflexión 💭]\n:END:\n\n%?\n- *Relevancia*:\n- *Impacto esperado: "
              :empty-lines 1)
 	
         ))
