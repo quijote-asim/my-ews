@@ -330,15 +330,28 @@
 ;; Configuración de TODO en org-mode
 
 ;; --- Secuencia de TODOs coherente con tus estados ---
+;; Todos en color blanco con fondo variable
 (setq org-todo-keywords
       '((sequence
-         "Resultado(r!)"    ; activos -> rojo
-         "Acción(a!)"       ; hacer -> amarillo fuerte
-         "Esperando(e@/!)"  ; en espera -> amarillo suave
-         "Parado(p@/!)"     ; pausado -> azul
+         "Tarea:(t!)"         ; Pendiente de procesar
+         "Resultado:(r!)"     ; Proyectos
+         "Acción:(a!)"        ; Siguientes Acciones
+         "Esperando:(e@/!)"   ; Pendiente de respuesta
+         "Parado:(p@/!)"      ; Detenido por alguna razón
          "|"
-         "Hecho(h@!)"       ; hecho -> verde
-         "Cancelado(c@!)"))) ; cancelado -> gris
+         "Hecho:(h@!)"        ; Terminadoe
+         "Cancelado:(c@!)"))) ; Ya no es necesario
+
+;; Colores para los estados
+
+(setq org-todo-keyword-faces
+      '(("Tarea:"      . (:foreground "white" :background "#2E7D32" :weight bold))
+	("Resultado:"  . (:foreground "white" :background "#1E3A8A" :weight bold))
+        ("Acción:"      . (:foreground "white" :background "#8B0000" :weight bold))
+        ("Esperando:"  . (:foreground "white" :background "#6E1B1B" :weight bold))
+        ("Parado:"     . (:foreground "white" :background "#2E7D32" :weight bold))
+        ("Hecho:"      . (:foreground "white" :background "#424242" :weight bold))
+        ("Cancelado:"  . (:foreground "white" :background "#616161" :weight bold))))
 
 ;; Show hidden emphasis markers
 
