@@ -867,35 +867,37 @@
 
 (add-hook 'ef-themes-post-load-hook #'ql-agenda-minimos--ef)
 
-;; Bind org agenda command and custom agenda
+;;; Bind org agenda command and custom agenda
 
 (setq org-agenda-custom-commands
-      '(("0" "Tareas por organizar"
-         ((tags-todo "mimoc+inbox")))
-
+      '(
+	("0" "InBox 📥 – Tareas por organizar"
+         todo "Tarea:"
+         ((org-agenda-files (list ql-tasks-file))
+          (org-agenda-overriding-header "InBox 📥")
+          (org-agenda-skip-function
+           (lambda () (org-agenda-skip-entry-if 'nottree "InBox 📥")))))
+	
         ("t" "Tareas de hoy" agenda ""
          ((org-agenda-span 'day)
           (org-agenda-entry-types '(:deadline :scheduled))
           (org-agenda-overriding-header "Tareas para hoy")
-          ;; Oculta DONE/HECHO + filtra InBox que no toca
           (org-agenda-skip-function
            (lambda ()
              (or (org-agenda-skip-entry-if 'todo 'done)
                  (mimoc-agenda-skip-inbox-if-not-soon))))
-          ;; Reduce repeticiones entre SCHEDULED y DEADLINE
           (org-agenda-skip-scheduled-if-deadline-is-shown t)
           (org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled)
-          ;; Presentación más limpia (solo “columna 3”: título)
           (org-agenda-prefix-format '((agenda . "  ")))
           (org-agenda-remove-tags t)
           (org-agenda-use-time-grid nil)
           (org-agenda-tags-column 0)))
 
         ("p" "Resultados activos"
-         ((tags-todo "mimoc+resultado")))
+         (tags-todo "mimoc+resultado"))
 
         ("h" "Resultados parados"
-         ((todo "HOLD")))
+         (todo "HOLD"))
 
         ("o" "Lista completa de objetivos"
          ((tags-todo "LEVEL=2"
@@ -921,7 +923,8 @@
          ((tags "LEVEL=1"
                 ((org-agenda-overriding-header "Contadores de Bloques Principales")
                  (org-agenda-files '("~/notes/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org"))
-                 (org-agenda-prefix-format "  ")))))))
+                 (org-agenda-prefix-format "  "))))))
+      )
 
 ;; FILE MANAGEMENT
 
@@ -1025,6 +1028,24 @@
   :custom
   (org-hugo-base-dir "~/work/blog/my-blog/")  ;; ruta raíz de tu sitio Hugo
   (org-hugo-auto-export-on-save t))                ;; habilita auto-export al guardar
+
+;; Exportar Org a Markdown (ox-hugo)
+;; Explicación breve (para referencia)
+;;
+;; =with-eval-after-load 'ox-hugo=   
+;; Garantiza que la tecla se defina *solo cuando ox-hugo esté cargado* .
+;;  
+;; =org-mode-map=   
+;; Limita el atajo a buffers de Org (evita colisiones globales).
+;; 
+;; =C-c b p=   
+;; Prefijo personal ( =C-c=  + letra) → correcto según convenciones de Emacs.
+;;  
+;; =org-hugo-export-to-md=   
+;;  Función que exporta el archivo o subtree según el contexto.
+
+(with-eval-after-load 'ox-hugo
+  (define-key org-mode-map (kbd "C-c b p") #'org-hugo-export-to-md))
 
 ;; archivo a crear en  blog/.dir-locals.el
 ;; Con el se convierten automaticamente los archivos que se inserten
