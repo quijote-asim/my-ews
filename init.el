@@ -89,7 +89,7 @@
 (set-face-attribute
  'default nil
  :family "Aporetic Sans Mono"
- :height 143
+ :height 110
  :weight 'regular)
 
 ;; segui automáticamente los enlaces simbólicos

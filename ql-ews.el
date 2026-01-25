@@ -62,6 +62,9 @@
   :type 'file
   :group 'ql)
 
+;; Directorio único para backups y autosaves
+(defvar ql-backup-dir (expand-file-name "~/.config/emacs/backups/"))
+
 ;; -----------------------------------------------------------------------------
 ;; Actualización automática de #+LASTMOD:
 ;; -----------------------------------------------------------------------------
@@ -276,5 +279,32 @@ Con C-u: pregunta el idioma destino."
 (global-set-key (kbd "C-c w x o") #'mimoc-export-objetivos-to-temp)
 (global-set-key (kbd "C-c w x p") #'mimoc-export-resultados-to-temp)
 (global-set-key (kbd "C-c w a") #'mimoc-activar-area-inactiva)
+
+;;; CUIDAR EL ORDEN DE RESPALDOS
+
+;; Con esto:
+;; - Ningún =~=  aparecerá en tus directorios de trabajo.
+;; - Ningún =#archivo#= ni =.#archivo=  se creará junto al original.
+;; - Todo irá a =~/.config/emacs/backups/= .
+
+;; Backups: archivo~
+(setq backup-directory-alist 
+      `(("." . ,ql-backup-dir)))
+
+;; Autosaves: #archivo# y .#archivo
+(setq auto-save-file-name-transforms
+      `((".*" ,ql-backup-dir t)))
+
+;; Evitar crear enlaces simbólicos rotos en autosaves
+(setq auto-save-list-file-prefix
+      (concat ql-backup-dir ".saves-"))
+
+;; Versionar backups (varios archivo.~1~, archivo.~2~), por trazabilidad
+
+(setq
+ version-control t        ; usar versiones numeradas
+ kept-new-versions 10    ; últimas 10
+ kept-old-versions 2     ; conservar 2 antiguas
+ delete-old-versions t)  ; borrar automáticamente
 
 ;;; ql-ews.el ends here
