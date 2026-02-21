@@ -330,28 +330,32 @@
 ;; Configuración de TODO en org-mode
 
 ;; --- Secuencia de TODOs coherente con tus estados ---
-;; Todos en color blanco con fondo variable
-(setq org-todo-keywords
-      '((sequence
-         "Tarea:(t!)"         ; Pendiente de procesar
-         "Resultado:(r!)"     ; Proyectos
-         "Acción:(a!)"        ; Siguientes Acciones
-         "Esperando:(e@/!)"   ; Pendiente de respuesta
-         "Parado:(p@/!)"      ; Detenido por alguna razón
-         "|"
-         "Hecho:(h@!)"        ; Terminadoe
-         "Cancelado:(c@!)"))) ; Ya no es necesario
 
+;; Estados TODO - Tres secuencias
+  (setq org-todo-keywords
+        '((sequence
+           "PROCESAR(t!)"  "ACCION(a!)"  "ESPERANDO(e@/!)"  "BLOQUEADO(b@/!)"  "|"  "HECHO(h!)"  "CANCELADO(c@!)")
+          (sequence
+           "PROYECTO(p!)"  "|"  "COMPLETADO(k!)"  "ARCHIVADO(x@!)")
+          (sequence
+           "PROPÓSITO(d!)"  "|" "LOGRADO(l!)"  "DESCARTADO(z@!)")))
+  
+  ;; Colores de estados
+  (setq org-todo-keyword-faces
+        '(("PROCESAR"    . (:foreground "gray60" :weight normal))
+          ("ACCION"      . (:foreground "orange red" :weight bold))
+          ("ESPERANDO"   . (:foreground "DeepSkyBlue3" :weight bold))
+          ("BLOQUEADO"   . (:foreground "goldenrod3" :weight bold))
+          ("HECHO"       . (:foreground "SpringGreen4" :weight bold))
+          ("CANCELADO"   . (:foreground "gray50" :weight bold :strike-through t))
+          ("PROYECTO"    . (:foreground "purple4" :weight bold))
+          ("COMPLETADO"  . (:foreground "SeaGreen4" :weight bold))
+          ("ARCHIVADO"   . (:foreground "gray50" :weight bold :strike-through t))
+          ("PROPÓSITO"   . (:foreground "orchid4" :weight bold))
+          ("LOGRADO"     . (:foreground "SeaGreen4" :weight bold))
+          ("DESCARTADO"  . (:foreground "gray50" :weight bold :strike-through t))))
+  
 ;; Colores para los estados
-
-(setq org-todo-keyword-faces
-      '(("Tarea:"      . (:foreground "white" :background "#2E7D32" :weight bold))
-	("Resultado:"  . (:foreground "white" :background "#1E3A8A" :weight bold))
-        ("Acción:"      . (:foreground "white" :background "#8B0000" :weight bold))
-        ("Esperando:"  . (:foreground "white" :background "#6E1B1B" :weight bold))
-        ("Parado:"     . (:foreground "white" :background "#2E7D32" :weight bold))
-        ("Hecho:"      . (:foreground "white" :background "#424242" :weight bold))
-        ("Cancelado:"  . (:foreground "white" :background "#616161" :weight bold))))
 
 ;; Show hidden emphasis markers
 
