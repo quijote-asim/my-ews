@@ -874,61 +874,29 @@
 ;;; Bind org agenda command and custom agenda
 
 (setq org-agenda-custom-commands
-      '(
-	("0" "InBox 📥 – Tareas por organizar"
-         todo "Tarea:"
-         ((org-agenda-files (list ql-tasks-file))
-          (org-agenda-overriding-header "InBox 📥")
-          (org-agenda-skip-function
-           (lambda () (org-agenda-skip-entry-if 'nottree "InBox 📥")))))
-	
-        ("t" "Tareas de hoy" agenda ""
-         ((org-agenda-span 'day)
-          (org-agenda-entry-types '(:deadline :scheduled))
-          (org-agenda-overriding-header "Tareas para hoy")
-          (org-agenda-skip-function
-           (lambda ()
-             (or (org-agenda-skip-entry-if 'todo 'done)
-                 (mimoc-agenda-skip-inbox-if-not-soon))))
-          (org-agenda-skip-scheduled-if-deadline-is-shown t)
-          (org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled)
-          (org-agenda-prefix-format '((agenda . "  ")))
-          (org-agenda-remove-tags t)
-          (org-agenda-use-time-grid nil)
-          (org-agenda-tags-column 0)))
+  '(("i" "InBox - Procesar"
+     ((todo "PROCESAR"
+            ((org-agenda-overriding-header "📥 InBox")))))
 
-        ("p" "Resultados activos"
-         (tags-todo "mimoc+resultado"))
+    ("a" "Acciones por prioridad"
+     ((tags-todo "+PRIORITY=\"A\""
+                 ((org-agenda-overriding-header "🔴 Prioridad A - Esta semana")))
+      (tags-todo "+PRIORITY=\"B\""
+                 ((org-agenda-overriding-header "🟠 Prioridad B - En cuanto pueda")))
+      (tags-todo "+PRIORITY=\"C\""
+                 ((org-agenda-overriding-header "⚪ Prioridad C - Cuando cuadre")))))
 
-        ("h" "Resultados parados"
-         (todo "HOLD"))
+    ("e" "ESPERANDO - Seguimiento"
+     ((todo "ESPERANDO"
+            ((org-agenda-overriding-header "⏳ Esperando respuesta")))))
 
-        ("o" "Lista completa de objetivos"
-         ((tags-todo "LEVEL=2"
-                     ((org-agenda-overriding-header "Objetivos de Bloques Principales")
-                      (org-agenda-files '("~/notes/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org"))))
-          (tags-todo "LEVEL=3&TODO=\"TODO\""
-                     ((org-agenda-overriding-header "Objetivos de Subáreas (Bloque 4)")
-                      (org-agenda-files '("~/notes/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org"))))))
+    ("y" "Proyectos activos"
+     ((todo "PROYECTO"
+            ((org-agenda-overriding-header "🚀 Proyectos en curso")))))
 
-        ("P" "Lista completa de resultados activos"
-         ((tags-todo "mimoc+resultado/TODO|HOLD"
-                     ((org-agenda-overriding-header "Resultados en Curso")
-                      (org-agenda-sorting-strategy '(category-keep))))))
-
-        ("i" "Revisión de áreas inactivas"
-         ((tags "LEVEL=3&CATEGORY=\"Sistemas\""
-                ((org-agenda-overriding-header "Áreas del Bloque 4 (Sistemas)")
-                 (org-agenda-files '("~/notes/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org"))
-                 (org-agenda-prefix-format "  %-20b ")
-                 (org-agenda-sorting-strategy '(category-keep))))))
-
-        ("e" "Equilibrio entre bloques principales"
-         ((tags "LEVEL=1"
-                ((org-agenda-overriding-header "Contadores de Bloques Principales")
-                 (org-agenda-files '("~/notes/agenda/20251101T114319==mimoc--hábitos-y-objetivos.org"))
-                 (org-agenda-prefix-format "  "))))))
-      )
+    ("o" "Propósitos vigentes"
+     ((todo "PROPÓSITO"
+            ((org-agenda-overriding-header "🎯 Propósitos activos")))))))
 
 ;; FILE MANAGEMENT
 
