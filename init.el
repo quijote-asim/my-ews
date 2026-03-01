@@ -326,6 +326,14 @@
         ("C-c w p" . ews-org-insert-screenshot)
         ("C-c w c" . ews-org-count-words)))
 
+  ;; Apertura de mi dashboard de MAPA
+
+  (global-set-key (kbd "C-c m d") 
+      (lambda () (interactive)
+      (find-file "~/notes/agenda/20260225T094223--mapa-dashboard-inicial.org")))
+
+
+
 ;; Configuración de mi flujo de trabajo
 ;; Configuración de TODO en org-mode
 
