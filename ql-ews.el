@@ -32,7 +32,7 @@
    :type 'file
    :group 'ql)
 
-(defcustom ql-tasks-file "~/notes/agenda/20251101T114111==mimoc--acciones-siguientes.org"
+(defcustom ql-tasks-file "~/notes/agenda/20251101T114111--mapa-lista-de-tareas.org"
   "Archivo de tareas"
   :type 'file
   :group 'ql)
