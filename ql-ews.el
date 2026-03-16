@@ -22,12 +22,12 @@
   :type 'directory
   :group 'ql)
 
-(defcustom ql-index-file "~/notes/agenda/20251101T113643==mimoc--bujo-index.org"
+(defcustom ql-index-file "~/notes/20260315T123905--mapa-documentos-clave__sistema.org"
   "Archivo índice del sistema."
   :type 'file
   :group 'ql)
 
-(defcustom ql-diary-file "~/notes/agenda/20260101T000001==1sop--2026-cuaderno-de-notas__diario.org"
+(defcustom ql-diary-file "~/notes/agenda/20260101T000001--mapa-notas-de-2026__sistema.org"
   "Archivo para logs diarios"
    :type 'file
    :group 'ql)
@@ -37,25 +37,27 @@
   :type 'file
   :group 'ql)
 
-(defcustom ql-goal-and-habits-file "~/notes/20251101T114319==mimoc--hábitos-y-objetivos.org"
+(defcustom ql-goal-and-habits-file "~/notes/agenda/20251101T114319--mapa-hábitos-y-objetivos-moc__sistema.org"
   "Archivo de hábitos y objetivos"
   :type 'file
   :group 'ql)
 
-(defcustom ql-projects-file "~/notes/20251101T114211==mimoc--resultados-esperados.org"
+(defcustom ql-projects-file "~/notes/agenda/20251101T114211--mapa-resultados-esperados-moc__sistema.org"
   "Archivo de Proyectos Activos"
   :type 'file
   :group 'ql)
 
-(defcustom ql-to-reevaluate-file "~/notes/20251101T113907==mimoc--temas-por-reevaluar.org"
+(defcustom ql-to-reevaluate-file "~/notes/20260316T120414--mapa-ideas-y-posibilidades-colecciones__sistema.org"
   "Archivo de Proyectos Activos"
   :type 'file
   :group 'ql)
 
-(defcustom ql-archive-file "~/notes/20250905T194624==mimoc--temas-terminados.org"
-  "Archivo de tareas terminadas"
-  :type 'file
-  :group 'ql)
+;; Descartado en favor de archivar en el diario
+
+;; (defcustom ql-archive-file "~/notes/20250905T194624==mimoc--temas-terminados.org"
+;;  "Archivo de tareas terminadas"
+;;  :type 'file
+;;  :group 'ql)
 
 (defcustom ql-elfeed-file "~/notes/20250221T153515==bujo--fuentes-rss__lista.org"
   "Archivo de fuentes RSS."
