@@ -12,10 +12,7 @@
   "Configuraciones personales del sistema QL."
   :group 'applications
   :prefix "ql-")
-
-;; ==============================
-;; Archivos clave
-;; ==============================
+;;; ARCHIVOS CLAVE
 
 (defcustom ql-denote-directory (expand-file-name "~/notes")
   "Directorio raíz donde vivirán las notas de Denote."
@@ -76,14 +73,14 @@
   :init-value nil
   :lighter " LastMod"
   (if ql-lastmod-auto-update-mode
-      (add-hook 'before-save-hook #'ql/--update-lastmod nil t)
-    (remove-hook 'before-save-hook #'ql/--update-lastmod t)))
+      (add-hook 'before-save-hook #'ql---update-lastmod nil t)
+    (remove-hook 'before-save-hook #'ql---update-lastmod t)))
 
-(defun ql/--update-lastmod ()
+(defun ql---update-lastmod ()
   (when (eq major-mode 'org-mode)
     (save-excursion
       (goto-char (point-min))
-      (when (re-search-forward (ql/--rx-key "lastmod") nil t)
+      (when (re-search-forward (ql---rx-key "lastmod") nil t)
         (replace-match (format "#+LASTMOD: %s"
                                (format-time-string "%Y-%m-%d %H:%M"))
                        t t)))))
@@ -118,13 +115,13 @@
 ;;; - Si enlazas una función definida con `defun` y `(interactive)`,
 ;;;   basta con usar `#'mi-funcion`. Ejemplo:
 ;;;
-;;;     (defun ql/flyspell-dict-en ()
+;;;     (defun ql-flyspell-dict-en ()
 ;;;       "Cambia el corrector (Flyspell/Hunspell) a inglés US."
 ;;;       (interactive)
 ;;;       (ispell-change-dictionary "en_US")
 ;;;       (message "Diccionario cambiado a: inglés (US)"))
 ;;;
-;;;     (global-set-key (kbd "C-c s e") #'ql/flyspell-dict-en)
+;;;     (global-set-key (kbd "C-c s e") #'ql-flyspell-dict-en)
 ;;;
 ;;; - Si quieres hacer algo rápido sin definir función con nombre,
 ;;;   puedes usar un `lambda` con `(interactive)` dentro. Ejemplo:
@@ -308,5 +305,74 @@ Con C-u: pregunta el idioma destino."
  kept-new-versions 10    ; últimas 10
  kept-old-versions 2     ; conservar 2 antiguas
  delete-old-versions t)  ; borrar automáticamente
+
+;;; ============================================================
+;;; FUNCIONES Flujo Tareas PARA
+;;; ============================================================
+
+;; ── ql-capture-select-context ────────────────────────────────
+;; (ya definida arriba en sección 3 — no duplicar en ql-ews.el)
+
+;; ── ql-archive-to-diary ──────────────────────────────────────
+;;
+;; Archiva la entrada actual al diario bajo el día en curso.
+;; Crea Año > Mes > [fecha] > Trabajo terminado si no existe.
+;; Marca la entrada como HECHO antes de archivar.
+;;
+;; Atajo en agenda:     A  (mayúscula — no pisa "a" de tags)
+;; Atajo en buffer:     C-c C-x A
+
+(defun ql-archive-to-diary ()
+  "Archiva la entrada actual al diario bajo el día en curso."
+  (interactive)
+  (let* ((diary-file  (expand-file-name ql-diary-file))
+         (time        (decode-time))
+         (year        (nth 5 time))
+         (month-num   (nth 4 time))
+         (day         (nth 3 time))
+         (dow         (calendar-day-name
+                       (list month-num day year) t))
+         (month-name  (calendar-month-name month-num))
+         (date-header (format "[%04d-%02d-%02d %s]"
+                              year month-num day dow))
+         (subtree     (save-excursion
+                        (org-back-to-heading t)
+                        (buffer-substring
+                         (point)
+                         (org-end-of-subtree t t)))))
+    (unless (string= (org-get-todo-state) "HECHO")
+      (org-todo "HECHO"))
+    (save-excursion
+      (find-file diary-file)
+      (goto-char (point-min))
+      (unless (re-search-forward
+               (format "^\\* %d" year) nil t)
+        (goto-char (point-max))
+        (insert (format "\n* %d\n" year)))
+      (unless (re-search-forward
+               (format "^\\*\\* %s" month-name) nil t)
+        (org-end-of-subtree)
+        (insert (format "\n** %s\n" month-name)))
+      (unless (re-search-forward
+               (regexp-quote date-header) nil t)
+        (org-end-of-subtree)
+        (insert (format "\n*** %s\n" date-header)))
+      (unless (re-search-forward
+               "^\\*\\*\\*\\* Trabajo terminado" nil t)
+        (org-end-of-subtree)
+        (insert "\n**** Trabajo terminado\n"))
+      (org-end-of-subtree)
+      (insert "\n")
+      (insert subtree)
+      (save-buffer))
+    (org-back-to-heading t)
+    (org-cut-subtree)
+    (message "Archivado: %s > Trabajo terminado" date-header)))
+
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c C-x A") #'ql-archive-to-diary))
+
+(with-eval-after-load 'org-agenda
+  (define-key org-agenda-mode-map (kbd "A") #'ql-archive-to-diary))
 
 ;;; ql-ews.el ends here

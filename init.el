@@ -745,168 +745,346 @@
      ("\\subsection{%s}" . "\\subsection*{%s}")
      ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
 
-;;; ADMINISTRATION
+;;; ORGANIZAR TAREAS
 
-;; Mis ficheros de agenda
+;; mapa-agenda-config.el
+;; Configuración de agenda y capturas — Sistema MAPA
+;; Quijote Libre · Generado: 2026-03-16
+;;
+;; REQUIERE: ql-ews.el cargado antes.
+;; Variables necesarias: ql-tasks-file, ql-to-reevaluate-file,
+;;   ql-projects-file, ql-objectives-file, ql-diary-file
+;;
+;; CORRECCIÓN PENDIENTE EN ql-ews.el:
+;;   Renombrar defcustom ql-goal-and-habits-file → ql-objectives-file
+;;   (mismo fichero 20251101T114319, solo cambia el nombre de variable)
+;;
+;; FUNCIONES QUE VAN EN ql-ews.el:
+;;   Ver sección al final de este fichero.
 
-(setq org-agenda-files (list ql-tasks-file))
+;;; ============================================================
+;;; 1. ARCHIVOS DE AGENDA
+;;; ============================================================
 
-;; Refile en los ficheros de agenda hasta nivel 3
+(setq org-agenda-files
+      (list ql-tasks-file
+            ql-to-reevaluate-file))
+
+;;; ============================================================
+;;; 2. REFILE
+;;; ============================================================
 
 (setq org-refile-targets
-      `((,ql-tasks-file            :maxlevel . 2)
-        (,ql-goal-and-habits-file  :maxlevel . 2)
-        (,ql-projects-file         :maxlevel . 2)
-        (,ql-to-reevaluate-file    :maxlevel . 2)
-        (,ql-archive-file          :maxlevel . 4)))
+      `((,ql-tasks-file          :maxlevel . 2)
+        (,ql-objectives-file     :maxlevel . 2)
+        (,ql-projects-file       :maxlevel . 2)
+        (,ql-to-reevaluate-file  :maxlevel . 3)))
 
-;; Define con que anticipación salen en agenda los deadlines
+;; Mostrar ruta completa en el completado (Vertico/Ivy/vanilla)
+(setq org-refile-use-outline-path t)
+(setq org-outline-path-complete-in-steps nil)
 
-(setq org-deadline-warning-days 7)
+;;; ============================================================
+;;; 3. CAPTURAS
+;;; ============================================================
 
-;; Plantillas de capturas
+;; Función auxiliar: menú de selección de contexto
+;; Usado por el template "a" (acción directa).
+;; Presenta completing-read y navega al heading elegido.
+
+(defun ql/capture-select-context ()
+  "Menú de selección de contexto para captura directa de acciones."
+  (let* ((contexts
+          '("@Ajustando equipos y configuraciones 🖥️"
+            "@Con Juegos y Aficiones 🎖️📷🎼"
+            "@Consultas médicas 🩺"
+            "@Escribiendo ✍🏽"
+            "@Estudiando 👨🏻‍🎓"
+            "@Hablando por teléfono/email ☎️"
+            "@Haciendo recados en la calle 🚶🏽"
+            "@Investigando por la Web 🖥️"
+            "@Leyendo 📑"
+            "@Reuniones 👥"
+            "@Trabajando con mis notas 📝"
+            "@Sin Contexto Específico"))
+         (choice (completing-read "Contexto: " contexts nil t)))
+    (goto-char (point-min))
+    (re-search-forward
+     (format "^\\*\\* %s" (regexp-quote choice)))))
 
 (setq org-capture-templates
-      `(
-        ;; 1) Tarea rápida -> InBox
-        ("t" "Tarea rápida al InBox ☑️" entry (file+headline ,ql-tasks-file "InBox 📥")
-         "** Tarea: %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
-         :empty-lines 1
-         :prepend t)
+  `(
+    ;; ── t · INBOX ────────────────────────────────────────────
+    ;; Captura rápida sin contexto definido.
+    ;; Flujo posterior: C-c C-w para refile al contexto correcto.
+    ("t" "Tarea → InBox" entry
+     (file+headline ,ql-tasks-file "InBox 📥")
+     "** PROCESAR %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+     :empty-lines 1
+     :prepend t)
 
-        ;; 2) Acción siguiente
-        ("a" "Acción siguiente ⏭️" entry (file "~/notes/agenda/mimoc--acciones-siguientes.org")
-         "*** Acción: %?\nSCHEDULED: %t\n:PROPERTIES:\n:AREA: :Bloque3:Profesional:\n:CREATED: %U\n:END:\n"
-         :empty-lines 1)
+    ;; ── a · ACCIÓN DIRECTA ───────────────────────────────────
+    ;; Usar cuando el contexto ya es claro en el momento de capturar.
+    ;; Presenta menú de contextos via completing-read.
+    ("a" "Acción directa" entry
+     (file+function ,ql-tasks-file ql/capture-select-context)
+     "*** ACCION %?\nSCHEDULED: %t\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+     :empty-lines 1)
 
-        ;; 3) Resultado esperado
-        ("p" "Resultado esperado 🏁" entry (file "~/notes/agenda/mimoc--resultados-esperados.org")
-         "*** Resultado:(r!) %?\n:PROPERTIES:\n:CREATED: %U\n:AREA: :Bloque4:Sistemas:\n:REFERENCIAS:\n:END:\n** Acción: Siguiente Acción\n"
-         :empty-lines 1)
+    ;; ── p · PROYECTO ─────────────────────────────────────────
+    ;; Resultado esperado con más de una acción necesaria.
+    ("p" "Proyecto (resultado esperado)" entry
+     (file+headline ,ql-projects-file "Proyectos activos")
+     "** PROYECTO %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n"
+     :empty-lines 1)
 
-        ;; 4) Diario: Log del día (datetree -> 'Nota 📋')
-	;; Diario: Nota 📋
-	("n" "Nota 📋" plain (file+datetree ,ql-diary-file)
-	 "**** %^{Título}\n:PROPERTIES:\n:CREATED: %U\n:tipo: [Nota 📋]\n:relacion: %^{Proyecto (opcional)}\n:END:\n\n- *Contexto*:  %?\n- *Decisión*:\n- *Resultado*: "
-	 :empty-lines 1)
-       
-	;; 5) Diario: Idea (datetree -> 'Idea 💡')
-	("i" "Idea 💡" plain  (file+datetree ,ql-diary-file)
-             "**** %^{Idea}\n:PROPERTIES:\n:CREATED: %U\n:tipo: [Idea 💡]:END:\n\n- *Descripción*:  %?\n- *Motivo*: "
-         :empty-lines 1)
+    ;; ── d · DIARIO ───────────────────────────────────────────
+    ;; Template único. Campo :tipo: con menú de selección.
+    ;; org presenta las opciones al capturar.
+    ("d" "Diario 📓" plain
+     (file+datetree ,ql-diary-file)
+     "**** %^{Título}\n:PROPERTIES:\n:CREATED: %U\n:tipo: %^{Tipo|Nota|Idea|Reflexion|Bug}\n:END:\n\n%?"
+     :empty-lines 1)
+    ))
 
-	;; 6) Diario: Bug (datetree -> 'Bug ⚠️')
-        ("e" "Bug ⚠️" entry (file+headline ,ql-tasks-file "InBox 📥")
-             "**** Tarea: %^{Incidencia}\n:PROPERTIES:\n:CREATED: %U\n:tipo: [Bug ⚠️]\n:Proyecto: %^{Proyecto (opcional)}\n:END:\n\n- *Qué falló*:  %?\n- *Sintomas*:\n- *Decisión*:\n- *Resultado*: "
-             :empty-lines 1)
-	
-	;; 7) Diario: Reflexión (datetree -> 'Reflexion 💭')
-        ("r" "Reflexión 💭" plain (file+datetree ,ql-diary-file)
-             "**** %^{Tema de la reflexión}\n:PROPERTIES:\n:CREATED: %U\n:tipo: [Reflexión 💭]\n:END:\n\n%?\n- *Relevancia*:\n- *Impacto esperado: "
-             :empty-lines 1)
-	
-        ))
-
-;; Mis etiquetas
+;;; ============================================================
+;;; 4. ETIQUETAS
+;;;
+;;; Atajos corregidos respecto al original:
+;;;   ?H estaba duplicado (@Hogar y _Hábito)  → ?h y ?H
+;;;   ?P estaba duplicado (@Personal y _Planifica) → ?p y ?l
+;;; Comenta este bloque completo si no usas etiquetas activamente.
+;;; ============================================================
 
 (setq org-tag-alist-for-agenda
-      '(;; áreas
-        ("@Hogar" . ?H)
-        ("@Personal" . ?P)
-	("@Ocio" . ?O)
-	("@Blog" . ?B)
-      
-        ;; Entornos
-        ("_Ordenador" . ?C)
-        ("_Teléfono" . ?T)
-	("_Escritorio" . ?E)
-        ("_Calle" . ?S)
+      '((:startgrouptag)
+        ("@Hogar"    . ?h)
+        ("@Personal" . ?p)
+        ("@Ocio"     . ?o)
+        ("@Blog"     . ?b)
+        (:endgrouptag)
+        (:startgrouptag)
+        ("_Ordenador"  . ?C)
+        ("_Teléfono"   . ?T)
+        ("_Escritorio" . ?E)
+        ("_Calle"      . ?S)
+        (:endgrouptag)
+        (:startgrouptag)
+        ("_Planifica" . ?l)
+        ("_Hacer"     . ?W)
+        ("_Hábito"    . ?H)
+        ("_Revisar"   . ?R)
+        (:endgrouptag)
+        (:startgrouptag)
+        ("@planificar"  . ?1)
+        ("@configurar"  . ?2)
+        ("@escribir"    . ?3)
+        ("@investigar"  . ?4)
+        ("@email"       . ?5)
+        ("@llamar"      . ?6)
+        ("@publicar"    . ?7)
+        ("@recados"     . ?8)
+        (:endgrouptag)))
 
-        ;; Tipo/Estado
-        ("_Planifica" . ?P)
-        ("_Hacer" . ?W)
-	("_Hábito" . ?H)
-	("_Revisar" . ?R)
+;;; ============================================================
+;;; 5. AJUSTES GENERALES DE AGENDA
+;;; ============================================================
 
-        ;; Actividaes
-        ("@planificar" . ?p)
-        ("@configurar" . ?c)
-        ("@escribir" . ?w)
-        ("@investigar" . ?i)
-        ("@email" . ?e)
-        ("@llamar" . ?l)
-	("@publicar" . ?b)
-        ("@recados" . ?r)))
-
-;; Anotar log
-(setq org-agenda-start-with-log-mode t)
-
-;; Visualización de la agenda
-
-;; Abrir la agenda en una ventana única
+;; Ventana única al abrir agenda
 (setq org-agenda-window-setup 'only-window)
 
-;; Ajustar la vista de columnas
-(setq org-agenda-prefix-format
-      '((agenda . " %b ")
-        (todo   . " %b ")
-        (tags   . " %b ")
-        (search . " %b ")))
+;; Semana empieza el lunes
+(setq org-agenda-start-on-weekday 1)
 
-(setq org-columns-default-format "%PRIORITY %25ITEM %SCHEDULED %DEADLINE %TAGS")
+;; Deadlines: aviso con 7 días de antelación
+(setq org-deadline-warning-days 7)
 
-;; Teclas para la agenda
-(global-set-key (kbd "C-c a") 'org-agenda)
-
-;; Eliminr las etiquetas del archivo
+;; Ocultar etiquetas en agenda (evita ruido visual)
 (setq org-agenda-remove-tags t)
 
-;; VISTAS PARA LA AGENDA
+;; Log mode DESACTIVADO globalmente.
+;; CORRECCIÓN: el original lo activaba globalmente con t,
+;; lo que hacía que todas las vistas mostraran el log siempre.
+;; Se activa solo en las vistas R y W mediante start-with-log-mode.
+(setq org-agenda-start-with-log-mode nil)
 
-;; --- Caras ligadas a la paleta del tema ef en uso ---
+;; Formato de prefijo: categoría en columna fija de 15 chars
+(setq org-agenda-prefix-format
+      '((agenda . " %-15c %b ")
+        (todo   . " %-15c ")
+        (tags   . " %-15c ")
+        (search . " %-15c ")))
+
+;; Columnas en vista árbol
+(setq org-columns-default-format
+      "%PRIORITY %25ITEM %SCHEDULED %DEADLINE %TAGS")
+
+;;; ============================================================
+;;; 6. AJUSTES VISUALES — paleta ef-themes
+;;; ============================================================
 
 (defun ql-agenda-minimos--ef ()
   "Mínimos visuales para la agenda usando la paleta ef-themes."
   (ef-themes-with-colors
     (custom-set-faces
-     `(org-agenda-structure ((t (:weight semibold :height 1.05))))
-     `(org-agenda-date-today ((t (:weight bold :underline t))))
-     `(org-agenda-done ((t (:foreground ,green))))
-     `(org-scheduled-previously ((t (:foreground ,red :weight bold))))
-     `(org-deadline-announce ((t (:foreground ,red))))
-     `(org-agenda-current-time ((t (:weight bold))))
-     `(org-agenda-time-grid ((t (:foreground ,fg-dim)))))))
+     `(org-agenda-structure        ((t (:weight semibold :height 1.05))))
+     `(org-agenda-date-today       ((t (:weight bold :underline t))))
+     `(org-agenda-done             ((t (:foreground ,green))))
+     `(org-scheduled-previously    ((t (:foreground ,red :weight bold))))
+     `(org-deadline-announce       ((t (:foreground ,red))))
+     `(org-agenda-current-time     ((t (:weight bold))))
+     `(org-agenda-time-grid        ((t (:foreground ,fg-dim)))))))
 
 (add-hook 'ef-themes-post-load-hook #'ql-agenda-minimos--ef)
 
-;;; Bind org agenda command and custom agenda
+;;; ============================================================
+;;; 7. ATAJO GLOBAL
+;;; ============================================================
+
+(global-set-key (kbd "C-c a") #'org-agenda)
+
+;;; ============================================================
+;;; 8. VISTAS PERSONALIZADAS — nueve vistas MAPA
+;;;
+;;; Mapa de teclas:
+;;;   d  Hoy              — mañana, arranque del día
+;;;   i  InBox            — procesamiento diario
+;;;   a  Prioridades      — durante el día
+;;;   c  Por categoría    — durante el día, modo contexto
+;;;   e  Esperando        — seguimiento
+;;;   y  Proyectos        — revisión
+;;;   o  Propósitos       — revisión semanal/mensual
+;;;   R  Revisión diaria  — noche
+;;;   W  Revisión semanal — semanal
+;;; ============================================================
 
 (setq org-agenda-custom-commands
-  '(("i" "InBox - Procesar"
+  '(
+
+    ;; ── d · HOY ──────────────────────────────────────────────
+    ;; Puerta de entrada al día.
+    ;; Bloques: compromisos con fecha · prioridad A · esperando urgente.
+    ("d" "Hoy"
+     ((agenda ""
+              ((org-agenda-span 1)
+               (org-agenda-overriding-header "📅 Compromisos de hoy")))
+      (todo "ACCION"
+            ((org-agenda-overriding-header "🔴 Prioridad A — ejecutable ahora")
+             (org-agenda-skip-function
+              '(org-agenda-skip-entry-if 'notregexp "\\[#A\\]"))
+             (org-agenda-sorting-strategy '(deadline-up scheduled-up))))
+      (todo "ESPERANDO"
+            ((org-agenda-overriding-header "⏳ Esperando — revisar hoy")
+             (org-agenda-max-entries 5)
+             (org-agenda-sorting-strategy '(timestamp-up)))))
+     ((org-agenda-compact-blocks t)))
+
+    ;; ── i · INBOX ────────────────────────────────────────────
+    ;; Procesamiento diario.
+    ;; Lo más antiguo sin procesar aparece primero (timestamp-up).
+    ("i" "InBox — Procesar"
      ((todo "PROCESAR"
-            ((org-agenda-overriding-header "📥 InBox")))))
+            ((org-agenda-overriding-header "📥 InBox — pendiente de procesar")
+             (org-agenda-sorting-strategy '(timestamp-up priority-down))))))
 
+    ;; ── a · PRIORIDADES ──────────────────────────────────────
+    ;; Solo estado ACCION. Filtro por marcador [#X] en el heading.
+    ;; Límite B=15, C=10 para evitar saturación visual.
     ("a" "Acciones por prioridad"
-     ((tags-todo "+PRIORITY=\"A\""
-                 ((org-agenda-overriding-header "🔴 Prioridad A - Esta semana")))
-      (tags-todo "+PRIORITY=\"B\""
-                 ((org-agenda-overriding-header "🟠 Prioridad B - En cuanto pueda")))
-      (tags-todo "+PRIORITY=\"C\""
-                 ((org-agenda-overriding-header "⚪ Prioridad C - Cuando cuadre")))))
+     ((todo "ACCION"
+            ((org-agenda-overriding-header "🔴 A — Esta semana")
+             (org-agenda-skip-function
+              '(org-agenda-skip-entry-if 'notregexp "\\[#A\\]"))
+             (org-agenda-sorting-strategy '(deadline-up scheduled-up))))
+      (todo "ACCION"
+            ((org-agenda-overriding-header "🟠 B — En cuanto pueda")
+             (org-agenda-skip-function
+              '(org-agenda-skip-entry-if 'notregexp "\\[#B\\]"))
+             (org-agenda-max-entries 15)
+             (org-agenda-sorting-strategy '(deadline-up scheduled-up))))
+      (todo "ACCION"
+            ((org-agenda-overriding-header "⚪ C — Cuando cuadre")
+             (org-agenda-skip-function
+              '(org-agenda-skip-entry-if 'notregexp "\\[#C\\]"))
+             (org-agenda-max-entries 10)
+             (org-agenda-sorting-strategy '(deadline-up scheduled-up)))))
+     ((org-agenda-compact-blocks t)))
 
-    ("e" "ESPERANDO - Seguimiento"
+    ;; ── c · POR CATEGORÍA / FECHA ASCENDENTE ─────────────────
+    ;; Agrupa por valor de :CATEGORY: más cercano al heading.
+    ;; Dentro de cada categoría: scheduled ascendente.
+    ;; Muestra ACCION + ESPERANDO + BLOQUEADO.
+    ("c" "Por categoría — fecha ascendente"
+     ((todo "ACCION|ESPERANDO|BLOQUEADO"
+            ((org-agenda-overriding-header "📂 Por categoría / fecha")
+             (org-agenda-sorting-strategy
+              '(category-up scheduled-up deadline-up priority-down)))))
+     ((org-agenda-compact-blocks t)))
+
+    ;; ── e · ESPERANDO ────────────────────────────────────────
+    ;; Lo más antiguo primero: facilita detectar items sin seguimiento.
+    ("e" "ESPERANDO — Seguimiento"
      ((todo "ESPERANDO"
-            ((org-agenda-overriding-header "⏳ Esperando respuesta")))))
+            ((org-agenda-overriding-header
+              "⏳ Esperando — más antiguo primero")
+             (org-agenda-sorting-strategy '(timestamp-up))))))
 
+    ;; ── y · PROYECTOS ────────────────────────────────────────
+    ;; Incluye BLOQUEADO. Ordenado por DEADLINE.
     ("y" "Proyectos activos"
-     ((todo "PROYECTO"
-            ((org-agenda-overriding-header "🚀 Proyectos en curso")))))
+     ((todo "PROYECTO|BLOQUEADO"
+            ((org-agenda-overriding-header "🚀 Proyectos en curso")
+             (org-agenda-sorting-strategy '(deadline-up priority-down))))))
 
+    ;; ── o · PROPÓSITOS ───────────────────────────────────────
+    ;; Uso exclusivo en revisión semanal/mensual.
     ("o" "Propósitos vigentes"
      ((todo "PROPÓSITO"
-            ((org-agenda-overriding-header "🎯 Propósitos activos")))))))
+            ((org-agenda-overriding-header
+              "🎯 Propósitos — revisión semanal/mensual")
+             (org-agenda-sorting-strategy '(priority-down))))))
 
-;; FILE MANAGEMENT
+    ;; ── R · REVISIÓN DIARIA ──────────────────────────────────
+    ;; Noche. Bloque 1: cerrado hoy. Bloque 2: inbox pendiente.
+    ;; Archivar al diario: "A" en agenda · C-c C-x A en buffer.
+    ("R" "Revisión diaria"
+     ((agenda ""
+              ((org-agenda-span 1)
+               (org-agenda-start-with-log-mode '(closed))
+               (org-agenda-overriding-header "✅ Cerrado hoy")))
+      (todo "PROCESAR"
+            ((org-agenda-overriding-header
+              "📥 InBox — procesar antes de cerrar"))))
+     ((org-agenda-compact-blocks t)))
+
+    ;; ── W · REVISIÓN SEMANAL ─────────────────────────────────
+    ;; Últimos 7 días con log de CLOSED + estado completo del sistema.
+    ("W" "Revisión semanal"
+     ((agenda ""
+              ((org-agenda-span 7)
+               (org-agenda-start-day "-6d")
+               (org-agenda-start-with-log-mode '(closed))
+               (org-agenda-overriding-header "✅ Cerrado esta semana")))
+      (todo "PROCESAR"
+            ((org-agenda-overriding-header "📥 InBox")))
+      (todo "ESPERANDO"
+            ((org-agenda-overriding-header "⏳ Esperando")
+             (org-agenda-sorting-strategy '(timestamp-up))))
+      (todo "PROYECTO|BLOQUEADO"
+            ((org-agenda-overriding-header "🚀 Proyectos")
+             (org-agenda-sorting-strategy '(deadline-up))))
+      (todo "PROPÓSITO"
+            ((org-agenda-overriding-header "🎯 Propósitos"))))
+     ((org-agenda-compact-blocks t)))
+
+    ))
+
+;;; ============================================================
+;;; FIN mapa-agenda-config.el
+;;; ============================================================
+
+
+;;; FILE MANAGEMENT
 
 (use-package dired
   :ensure
