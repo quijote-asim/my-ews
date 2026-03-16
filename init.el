@@ -758,7 +758,7 @@
         (,ql-goal-and-habits-file  :maxlevel . 2)
         (,ql-projects-file         :maxlevel . 2)
         (,ql-to-reevaluate-file    :maxlevel . 2)
-        (,ql-archive-file          :maxlevel . 2)))
+        (,ql-archive-file          :maxlevel . 4)))
 
 ;; Define con que anticipación salen en agenda los deadlines
 

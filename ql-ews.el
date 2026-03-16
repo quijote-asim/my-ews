@@ -37,7 +37,7 @@
   :type 'file
   :group 'ql)
 
-(defcustom ql-goal-and-habits-file "~/notes/agenda/20251101T114319--mapa-hábitos-y-objetivos-moc__sistema.org"
+(defcustom ql-objectives-file "~/notes/agenda/20251101T114319--mapa-hábitos-y-objetivos-moc__sistema.org"
   "Archivo de hábitos y objetivos"
   :type 'file
   :group 'ql)
@@ -52,12 +52,12 @@
   :type 'file
   :group 'ql)
 
-;; Descartado en favor de archivar en el diario
+;; Descartado fichero especifico en favor de archivar en el diario
 
-;; (defcustom ql-archive-file "~/notes/20250905T194624==mimoc--temas-terminados.org"
-;;  "Archivo de tareas terminadas"
-;;  :type 'file
-;;  :group 'ql)
+(defcustom ql-archive-file "~/notes/agenda/20260101T000001--mapa-notas-de-2026__sistema.org"
+  "Archivo de tareas terminadas"
+  :type 'file
+  :group 'ql)
 
 (defcustom ql-elfeed-file "~/notes/20250221T153515==bujo--fuentes-rss__lista.org"
   "Archivo de fuentes RSS."
