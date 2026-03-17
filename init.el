@@ -850,40 +850,29 @@
 ;;; ============================================================
 ;;; 4. ETIQUETAS
 ;;;
-;;; Atajos corregidos respecto al original:
-;;;   ?H estaba duplicado (@Hogar y _Hábito)  → ?h y ?H
-;;;   ?P estaba duplicado (@Personal y _Planifica) → ?p y ?l
-;;; Comenta este bloque completo si no usas etiquetas activamente.
 ;;; ============================================================
 
-(setq org-tag-alist-for-agenda
+(setq org-tag-alist
       '((:startgrouptag)
+        ;; Grupo 1: Áreas
         ("@Hogar"    . ?h)
         ("@Personal" . ?p)
         ("@Ocio"     . ?o)
         ("@Blog"     . ?b)
         (:endgrouptag)
         (:startgrouptag)
+        ;; Grupo 2: Entornos
         ("_Ordenador"  . ?C)
         ("_Teléfono"   . ?T)
         ("_Escritorio" . ?E)
         ("_Calle"      . ?S)
         (:endgrouptag)
         (:startgrouptag)
+        ;; Grupo 3: Tipos de acción
         ("_Planifica" . ?l)
         ("_Hacer"     . ?W)
         ("_Hábito"    . ?H)
         ("_Revisar"   . ?R)
-        (:endgrouptag)
-        (:startgrouptag)
-        ("@planificar"  . ?1)
-        ("@configurar"  . ?2)
-        ("@escribir"    . ?3)
-        ("@investigar"  . ?4)
-        ("@email"       . ?5)
-        ("@llamar"      . ?6)
-        ("@publicar"    . ?7)
-        ("@recados"     . ?8)
         (:endgrouptag)))
 
 ;;; ============================================================
