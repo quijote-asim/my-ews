@@ -777,8 +777,8 @@
 ;;; ============================================================
 
 (setq org-agenda-files
-      (list ql-tasks-file
-            ql-to-reevaluate-file))
+      (list ql-tasks-file))
+;;           ql-to-reevaluate-file))
 
 ;;; ============================================================
 ;;; 2. REFILE
@@ -786,8 +786,9 @@
 
 (setq org-refile-targets
       `((,ql-tasks-file          :maxlevel . 2)
-        (,ql-objectives-file     :maxlevel . 2)
         (,ql-projects-file       :maxlevel . 2)
+        (,ql-objectives-file     :maxlevel . 2)
+        (,ql-diary-file       :maxlevel . 4)
         (,ql-to-reevaluate-file  :maxlevel . 3)))
 
 ;; Mostrar ruta completa en el completado (Vertico/Ivy/vanilla)
