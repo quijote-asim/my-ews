@@ -5,14 +5,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(elfeed-feeds '("https://xenodium.com/feed"))
- '(package-selected-packages
-   '(balanced-windows biblio citar-denote consult-notes denote-explore
-		      denote-org ef-themes elfeed-org emms
-		      fountain-mode helpful lorem-ipsum marginalia
-		      markdown-mode mixed-pitch nov olivetti openwith
-		      orderless org-appear org-fragtog org-modern
-		      org-web-tools ox-epub ox-hugo spacious-padding
-		      titlecase vertico vundo writegood-mode)))
+ '(package-selected-packages nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

@@ -118,9 +118,19 @@
 
 (setq initial-major-mode 'org-mode
       initial-scratch-message (concat "#+title: Emacs Writing Studio\n"
-					"#+subtitle: Scratch Buffer\n\n"
-					"The text in this buffer is not saved "
-					"when exiting Emacs!\n\n"))
+					"#+subtitle: Scratch Buffer\n\n"))
+
+;; Persistir el buffer *scratch* entre sesiones
+(use-package persistent-scratch
+  :ensure t
+  :custom
+  ;; Guardar cada 60 segundos (por defecto es 300)
+  (persistent-scratch-autosave-interval 60)
+  ;; Ubicación del archivo de persistencia
+  (persistent-scratch-save-file
+   (expand-file-name "persistent-scratch" user-emacs-directory))
+  :config
+  (persistent-scratch-setup-default))
 
 ;; Spacious padding
 
