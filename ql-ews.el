@@ -19,7 +19,7 @@
   :type 'directory
   :group 'ql)
 
-(defcustom ql-index-file "~/notes/20260315T123905--mapa-documentos-clave__sistema.org"
+(defcustom ql-index-file "agenda/20260225T094223--mapa-dashboard-inicial.org"
   "Archivo índice del sistema."
   :type 'file
   :group 'ql)
