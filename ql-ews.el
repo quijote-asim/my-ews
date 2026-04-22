@@ -203,6 +203,16 @@ Con C-u: pregunta el idioma destino."
                     (mimoc-deadline-within-days-p 7))
           (or (outline-next-heading) (point-max)))))))
 
+(defun ql-skip-unless-overdue-7 ()
+  "Salta la entrada a menos que SCHEDULED o DEADLINE superen 7 días de antigüedad."
+  (let* ((scheduled (org-get-scheduled-time (point)))
+         (deadline  (org-get-deadline-time  (point)))
+         (umbral    (time-subtract (current-time) (days-to-time 7))))
+    (if (or (and scheduled (time-less-p scheduled umbral))
+            (and deadline  (time-less-p deadline  umbral)))
+        nil
+      (or (outline-next-heading) (point-max)))))
+
 ;; Exportar objetivos a archivo temporal
 (defun mimoc-export-objetivos-to-temp ()
   "Exporta todos los objetivos a archivo temporal para revisión."

@@ -788,7 +788,7 @@
       `((,ql-tasks-file          :maxlevel . 2)
         (,ql-projects-file       :maxlevel . 2)
         (,ql-objectives-file     :maxlevel . 2)
-        (,ql-diary-file       :maxlevel . 4)
+        (,ql-diary-file          :maxlevel . 4)
         (,ql-to-reevaluate-file  :maxlevel . 3)))
 
 ;; Mostrar ruta completa en el completado (Vertico/Ivy/vanilla)
@@ -955,6 +955,7 @@
 ;;;   y  Proyectos        — revisión
 ;;;   o  Propósitos       — revisión semanal/mensual
 ;;;   R  Revisión diaria  — noche
+;;;   v  Temas atrasados  — semanal
 ;;;   W  Revisión semanal — semanal
 ;;; ============================================================
 
@@ -1057,6 +1058,17 @@
               "📥 InBox — procesar antes de cerrar"))))
      ((org-agenda-compact-blocks t)))
 
+    ;; ── v · ATRASADOS ────────────────────────────────────────
+    ;; Tareas con SCHEDULED o DEADLINE con más de 7 días de retraso.
+    ;; Ordenadas por fecha ascendente: los más viejos primero.
+    ;; Uso: limpieza semanal y detección de deuda oculta.
+    ("v" "Atrasados — >7 días"
+     ((todo "ACCION|PROYECTO|PROCESAR"
+	    ((org-agenda-overriding-header "⚠️ Atrasados — más de 7 días")
+	     (org-agenda-skip-function '(ql-skip-unless-overdue-7))
+	     (org-agenda-sorting-strategy '(scheduled-up deadline-up priority-down)))))
+             ((org-agenda-compact-blocks t)))
+    
     ;; ── W · REVISIÓN SEMANAL ─────────────────────────────────
     ;; Últimos 7 días con log de CLOSED + estado completo del sistema.
     ("W" "Revisión semanal"
